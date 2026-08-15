@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + verified photo sources. v11
+// UI cleanup loader + filters + venue swipe + verified photo sources. v11.1
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -21,7 +21,6 @@
     }
   }
 
-  // Убираем старые демонстрационные Unsplash-фото ещё до первого render().
   cleanDemoPhotos();
 
   const swipe=document.createElement('script');
@@ -48,19 +47,15 @@
       tries++;
       try{
         if(typeof render!=='function'||typeof data!=='function'||typeof filters==='undefined'||typeof active==='undefined')throw new Error('main not ready');
-
         cleanDemoPhotos();
-
         const desired=['Все','Бассейн','Джакузи','Сауна','На дровах','Хаммам','До 1000 ₽','1000–1500 ₽','От 1500 ₽'];
         filters.splice(0,filters.length,...desired);
-
         const baseSearch=()=>{
           const q=(document.querySelector('#q')?.value||'').trim().toLowerCase();
           return (window.VENUES||[]).filter(v=>!q||[v.name,v.type,v.address,...(v.features||[])].join(' ').toLowerCase().includes(q));
         };
         const has=(v,label)=>(v.features||[]).some(x=>String(x).toLowerCase()===label.toLowerCase());
         const isSauna=v=>(v.features||[]).some(x=>/^(сауна|финская сауна)$/i.test(String(x)));
-
         data=function(){
           const list=baseSearch();
           if(active==='Все')return list;
@@ -74,12 +69,9 @@
           if(active==='От 1500 ₽')return list.filter(v=>Number.isFinite(v.price)&&v.price>=1500);
           return list;
         };
-
         if(!desired.includes(active))active='Все';
         render();
-      }catch(e){
-        if(tries<80)setTimeout(wait,40);
-      }
+      }catch(e){if(tries<80)setTimeout(wait,40);}
     };
     wait();
   }
