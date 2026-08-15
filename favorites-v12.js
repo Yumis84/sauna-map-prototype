@@ -1,4 +1,4 @@
-// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12.3
+// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12.4
 (function(){
   if(window.__pargidFavoritesV12)return;
   window.__pargidFavoritesV12=true;
@@ -7,7 +7,10 @@
   const style=document.createElement('style');
   style.textContent=`
     .nav{grid-template-columns:repeat(3,1fr)!important}
-    .nav [data-s="favorites"]{font-size:27px!important;line-height:1;font-weight:800!important}
+    .nav [data-s="favorites"]{line-height:1;font-weight:800!important}
+    .nav [data-s="favorites"] .nav-heart{width:27px;height:27px;display:block;overflow:visible}
+    .nav [data-s="favorites"] .nav-heart path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:fill .16s ease,stroke .16s ease}
+    .nav [data-s="favorites"] .nav-heart.filled path{fill:currentColor}
     #favorites .favorite-empty{padding:64px 18px;text-align:center;color:#a9b5af;line-height:1.55}
     #favorites .favorite-empty .heart{font-size:38px;color:#ffd37f;margin-bottom:10px}
     #favorites .favorite-item{position:relative}
@@ -15,6 +18,8 @@
     #favorites .favorite-item .ct{padding-right:42px}
   `;
   document.head.appendChild(style);
+
+  const navHeart=filled=>`<svg class="nav-heart${filled?' filled':''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.2C10.1 18.5 4.2 14.2 4.2 9.5C4.2 7.1 6.1 5.3 8.5 5.3C10 5.3 11.3 6.1 12 7.3C12.7 6.1 14 5.3 15.5 5.3C17.9 5.3 19.8 7.1 19.8 9.5C19.8 14.2 13.9 18.5 12 20.2Z"/></svg>`;
 
   const favIds=()=>{
     try{return new Set((JSON.parse(localStorage.getItem(KEY)||'[]')||[]).map(Number))}
@@ -69,7 +74,7 @@
       button=document.createElement('button');
       button.type='button';
       button.dataset.s='favorites';
-      button.innerHTML='♡';
+      button.innerHTML=navHeart(false);
       button.setAttribute('aria-label','Избранное');
       nav.appendChild(button);
       button.onclick=()=>showFavorites();
@@ -81,7 +86,7 @@
     const count=favIds().size;
     const b=document.querySelector('.nav [data-s="favorites"]');
     if(b){
-      b.innerHTML=count?'♥':'♡';
+      b.innerHTML=navHeart(count>0);
       b.setAttribute('aria-label',count?`Избранное, ${count}`:'Избранное');
     }
   }
