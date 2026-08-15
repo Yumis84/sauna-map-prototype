@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.14
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.15
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -55,6 +55,12 @@
     'Эфис':'+74012557678'
   };
 
+  // Если каталог-источник скрывает сами цифры за своей кнопкой звонка,
+  // не подставляем номер другой организации: ведём пользователя к исходной карточке.
+  const PHONE_SOURCE_FALLBACKS={
+    'Эйфория':'https://101sauna.ru/Kaliningrad/Euforiya'
+  };
+
   function applyPhoneUpdates(){
     if(!Array.isArray(window.VENUES))return;
     for(const v of window.VENUES){
@@ -87,8 +93,27 @@
     });
   }
 
+  function installPhoneFallback(){
+    if(window.__pargidPhoneSourceFallbackV13)return;
+    window.__pargidPhoneSourceFallbackV13=true;
+    document.addEventListener('click',e=>{
+      const btn=e.target.closest?.('#sheet #call,#sheet .call-v4');
+      if(!btn)return;
+      const detail=btn.closest('.detail');
+      const name=detail?.querySelector('h2')?.textContent?.trim();
+      const venue=(window.VENUES||[]).find(v=>v.name===name);
+      if(!venue||venue.phone)return;
+      const url=PHONE_SOURCE_FALLBACKS[name];
+      if(!url)return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      window.open(url,'_blank','noopener');
+    },true);
+  }
+
   applyPhoneUpdates();
   cleanDemoPhotos();
+  installPhoneFallback();
 
   const swipe=document.createElement('script');swipe.src='venue-swipe-v9.js?v=9.2';document.head.appendChild(swipe);
   const favorites=document.createElement('script');favorites.src='favorites-v12.js?v=12.6';document.head.appendChild(favorites);
