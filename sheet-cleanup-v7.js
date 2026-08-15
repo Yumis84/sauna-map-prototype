@@ -1,4 +1,4 @@
-// Актуализация каталога + UI cleanup loader. v13.18
+// Актуализация каталога + UI cleanup loader. v13.19
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -377,7 +377,7 @@
     try{if(typeof render==='function')render()}catch(_){ }
     requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()});
   });
-  const mapPhotos=document.createElement('script');mapPhotos.src='map-photos-v15.js?v=15';document.head.appendChild(mapPhotos);
+  const mapPhotos=document.createElement('script');mapPhotos.src='map-photos-v15.js?v=15.1';document.head.appendChild(mapPhotos);
 
   document.addEventListener('pargid:vsaunah-ready',()=>{
     applyAllData();
