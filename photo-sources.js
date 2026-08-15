@@ -76,3 +76,21 @@ if(Array.isArray(window.VENUES))for(const v of window.VENUES){const c=window.VEN
 })();
 
 (function syncMapWithFilters(){function sync(){try{if(typeof data!=='function'||typeof markers==='undefined'||typeof map==='undefined'||!map||typeof map.hasLayer!=='function')return;const visible=new Set(data().map(v=>String(v.id)));for(const [id,m] of Object.entries(markers)){const show=visible.has(String(id)),shown=map.hasLayer(m);if(show&&!shown)m.addTo(map);if(!show&&shown)map.removeLayer(m)}}catch(e){}}function start(){if(typeof addMarker==='function')for(const v of(window.VENUES||[])){if(window.VENUE_COORDS[v.name])addMarker(v)}document.addEventListener('click',e=>{if(e.target.closest('[data-f]'))setTimeout(sync,0)});document.addEventListener('input',e=>{if(e.target&&e.target.id==='q')setTimeout(sync,0)});if(typeof addMarker==='function'){const orig=addMarker;addMarker=function(v){orig(v);sync()}}setTimeout(sync,0)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start()})();
+
+// Закрытие карточки: фон, Esc и естественный свайп вниз.
+(function venueSheetDismiss(){
+ const style=document.createElement('style');
+ style.textContent=`.sheet{will-change:transform}.sheet.swipe-anim{transition:transform .2s cubic-bezier(.2,.8,.2,1)}.sheet-handle{position:absolute;z-index:30;top:8px;left:50%;width:44px;height:5px;border-radius:999px;background:#ffffff66;transform:translateX(-50%);pointer-events:none}.back.swipe-dragging{transition:none!important}`;
+ document.head.appendChild(style);
+ let sx=0,sy=0,lastY=0,startedAt=0,dragging=false,cancelled=false,eligible=false;
+ const detail=()=>document.getElementById('detail');
+ const sheet=()=>document.getElementById('sheet');
+ function reset(s){if(!s)return;s.classList.add('swipe-anim');s.style.transform='translateY(0)';setTimeout(()=>s.classList.remove('swipe-anim'),220)}
+ function closeSheet(){const d=detail(),s=sheet();if(!d||!s)return;s.classList.add('swipe-anim');s.style.transform='translateY(110vh)';setTimeout(()=>{d.classList.remove('on','swipe-dragging');s.style.transform='';s.classList.remove('swipe-anim')},190)}
+ function addHandle(){const s=sheet();if(s&&s.children.length&&!s.querySelector('.sheet-handle')){const h=document.createElement('div');h.className='sheet-handle';h.setAttribute('aria-hidden','true');s.appendChild(h)}}
+ function onStart(e){const s=sheet();if(!s||!detail()?.classList.contains('on')||e.touches.length!==1)return;if(e.target.closest('button,a,input,select,textarea'))return;sx=e.touches[0].clientX;sy=lastY=e.touches[0].clientY;startedAt=performance.now();dragging=false;cancelled=false;eligible=s.scrollTop<=1}
+ function onMove(e){const s=sheet(),d=detail();if(!eligible||cancelled||!s||!d||e.touches.length!==1)return;const x=e.touches[0].clientX,y=e.touches[0].clientY,dx=x-sx,dy=y-sy;lastY=y;if(!dragging){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;if(Math.abs(dx)>Math.abs(dy)){cancelled=true;return}if(dy<=0){cancelled=true;return}dragging=true;s.classList.remove('swipe-anim');d.classList.add('swipe-dragging')}if(dy>0){e.preventDefault();s.style.transform=`translateY(${Math.min(dy,window.innerHeight*.85)}px)`}}
+ function onEnd(){const s=sheet(),d=detail();if(!s||!d)return;if(!dragging){eligible=false;return}const dy=Math.max(0,lastY-sy),elapsed=Math.max(1,performance.now()-startedAt),velocity=dy/elapsed;dragging=false;eligible=false;d.classList.remove('swipe-dragging');if(dy>110||velocity>.65)closeSheet();else reset(s)}
+ function init(){const d=detail(),s=sheet();if(!d||!s)return;addHandle();s.addEventListener('touchstart',onStart,{passive:true});s.addEventListener('touchmove',onMove,{passive:false});s.addEventListener('touchend',onEnd,{passive:true});s.addEventListener('touchcancel',onEnd,{passive:true});d.addEventListener('click',e=>{if(e.target===d)closeSheet()});new MutationObserver(addHandle).observe(s,{childList:true});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&d.classList.contains('on'))closeSheet()})}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init()
+})();
