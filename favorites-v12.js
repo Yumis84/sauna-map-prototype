@@ -1,4 +1,4 @@
-// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12.1
+// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12.2
 (function(){
   if(window.__pargidFavoritesV12)return;
   window.__pargidFavoritesV12=true;
@@ -7,6 +7,7 @@
   const style=document.createElement('style');
   style.textContent=`
     .nav{grid-template-columns:repeat(3,1fr)!important}
+    .nav [data-s="favorites"]{font-size:27px!important;line-height:1;font-weight:800!important}
     #favorites .favorite-empty{padding:64px 18px;text-align:center;color:#a9b5af;line-height:1.55}
     #favorites .favorite-empty .heart{font-size:38px;color:#ffd37f;margin-bottom:10px}
     #favorites .favorite-item{position:relative}
@@ -68,7 +69,8 @@
       button=document.createElement('button');
       button.type='button';
       button.dataset.s='favorites';
-      button.innerHTML='♡ Избранное';
+      button.innerHTML='♡';
+      button.setAttribute('aria-label','Избранное');
       nav.appendChild(button);
       button.onclick=()=>showFavorites();
     }
@@ -79,7 +81,7 @@
     const count=favIds().size;
     const b=document.querySelector('.nav [data-s="favorites"]');
     if(b){
-      b.innerHTML=count?'♥ Избранное':'♡ Избранное';
+      b.innerHTML=count?'♥':'♡';
       b.setAttribute('aria-label',count?`Избранное, ${count}`:'Избранное');
     }
   }
