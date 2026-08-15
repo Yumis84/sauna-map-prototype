@@ -1,4 +1,4 @@
-// UI cleanup loader + practical sauna/price filters + venue swipe + verified-photo cleanup. v10
+// UI cleanup loader + filters + venue swipe + verified photo sources. v11
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -27,6 +27,14 @@
   const swipe=document.createElement('script');
   swipe.src='venue-swipe-v9.js?v=9.1';
   document.head.appendChild(swipe);
+
+  document.addEventListener('pargid:vsaunah-ready',()=>{
+    cleanDemoPhotos();
+    try{if(typeof render==='function')render();}catch(_){ }
+  });
+  const vsaunah=document.createElement('script');
+  vsaunah.src='vsaunah-v11.js?v=11';
+  document.head.appendChild(vsaunah);
 
   const legacy=document.createElement('script');
   legacy.src='sauna101-legacy-v7.js?v=8';
