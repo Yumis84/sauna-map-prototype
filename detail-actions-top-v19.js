@@ -1,12 +1,49 @@
-// Перенос основных действий вверх открытой карточки. v19
+// Перенос основных действий вверх открытой карточки. v19.1
 (function(){
   if(window.__pargidDetailActionsTopV19)return;
   window.__pargidDetailActionsTopV19=true;
 
   const style=document.createElement('style');
   style.textContent=`
-    #sheet .contact-v4.contact-top-v19{margin:14px 0 20px!important}
+    #sheet .contact-v4.contact-top-v19{margin:10px 0 14px!important;gap:6px!important}
     #sheet .contact-v4.contact-top-v19 + .desc-v4{margin-top:0!important}
+
+    /* Делаем действия визуально легче и компактнее. */
+    #sheet .contact-v4 button,
+    #sheet .actions button{
+      min-height:38px!important;
+      height:38px!important;
+      border-radius:12px!important;
+      padding:0 11px!important;
+      font-size:13px!important;
+      line-height:1!important;
+    }
+
+    #sheet .actions{
+      grid-template-columns:max-content minmax(0,1fr)!important;
+      gap:6px!important;
+      margin-top:10px!important;
+    }
+
+    /* Звонок — отдельное короткое зелёное действие. */
+    #sheet #call,
+    #sheet .call-v4{
+      width:auto!important;
+      min-width:112px!important;
+      max-width:128px!important;
+      justify-self:start!important;
+      flex:0 0 auto!important;
+      background:#2f9e62!important;
+      color:#fff!important;
+      border:1px solid #45b97a!important;
+      box-shadow:none!important;
+    }
+
+    #sheet #call:active,
+    #sheet .call-v4:active{background:#278653!important}
+
+    #sheet .route,
+    #sheet .photos{grid-column:1/-1!important}
   `;
   document.head.appendChild(style);
 
