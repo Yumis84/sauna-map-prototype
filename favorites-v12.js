@@ -1,4 +1,4 @@
-// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12.2
+// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12.3
 (function(){
   if(window.__pargidFavoritesV12)return;
   window.__pargidFavoritesV12=true;
