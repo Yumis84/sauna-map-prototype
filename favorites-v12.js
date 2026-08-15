@@ -1,4 +1,4 @@
-// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12
+// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12.1
 (function(){
   if(window.__pargidFavoritesV12)return;
   window.__pargidFavoritesV12=true;
@@ -79,7 +79,7 @@
     const count=favIds().size;
     const b=document.querySelector('.nav [data-s="favorites"]');
     if(b){
-      b.innerHTML=count?`♥ Избранное${count?` · ${count}`:''}`:'♡ Избранное';
+      b.innerHTML=count?'♥ Избранное':'♡ Избранное';
       b.setAttribute('aria-label',count?`Избранное, ${count}`:'Избранное');
     }
   }
