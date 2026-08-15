@@ -1,7 +1,7 @@
-// UI cleanup loader + practical sauna/price filters + venue swipe. v9
+// UI cleanup loader + practical sauna/price filters + venue swipe. v9.1
 (function(){
   const swipe=document.createElement('script');
-  swipe.src='venue-swipe-v9.js?v=9';
+  swipe.src='venue-swipe-v9.js?v=9.1';
   document.head.appendChild(swipe);
 
   const legacy=document.createElement('script');
