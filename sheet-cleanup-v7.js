@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.9
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.10
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -9,15 +9,9 @@
     for(const v of window.VENUES){
       const gallery=Array.isArray(v.gallery)?v.gallery:[];
       const real=[...new Set(gallery.filter(src=>src&&!isDemo(src)&&!isPlaceholder(src)))];
-      if(real.length){
-        v.gallery=real;
-        v.img=real[0];
-      }else if(v.img&&!isDemo(v.img)&&!isPlaceholder(v.img)){
-        v.gallery=[v.img];
-      }else{
-        v.img=PLACEHOLDER;
-        v.gallery=[PLACEHOLDER];
-      }
+      if(real.length){v.gallery=real;v.img=real[0]}
+      else if(v.img&&!isDemo(v.img)&&!isPlaceholder(v.img)){v.gallery=[v.img]}
+      else{v.img=PLACEHOLDER;v.gallery=[PLACEHOLDER]}
     }
   }
 
@@ -34,64 +28,23 @@
     });
   }
 
-  function removeMapBrand(){
-    document.querySelectorAll('#mapTop .bar').forEach(el=>el.remove());
-  }
-
   cleanDemoPhotos();
-  removeMapBrand();
 
-  const swipe=document.createElement('script');
-  swipe.src='venue-swipe-v9.js?v=9.2';
-  document.head.appendChild(swipe);
+  const swipe=document.createElement('script');swipe.src='venue-swipe-v9.js?v=9.2';document.head.appendChild(swipe);
+  const favorites=document.createElement('script');favorites.src='favorites-v12.js?v=12.6';document.head.appendChild(favorites);
+  const ratingUi=document.createElement('script');ratingUi.src='rating-ui-v17.js?v=17';document.head.appendChild(ratingUi);
+  const catalogSearch=document.createElement('script');catalogSearch.src='catalog-search-v18.js?v=18.5';document.head.appendChild(catalogSearch);
+  const keepMapAlive=document.createElement('script');keepMapAlive.src='favorites-map-keepalive-v14.js?v=14';document.head.appendChild(keepMapAlive);
+  const mapReturnFix=document.createElement('script');mapReturnFix.src='map-return-fix-v13.js?v=13';document.head.appendChild(mapReturnFix);
+  const userLocation=document.createElement('script');userLocation.src='user-location-v16.js?v=16';document.head.appendChild(userLocation);
 
-  const favorites=document.createElement('script');
-  favorites.src='favorites-v12.js?v=12.6';
-  document.head.appendChild(favorites);
+  document.addEventListener('pargid:map-photos-ready',()=>{cleanDemoPhotos();try{if(typeof render==='function')render()}catch(_){ }requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()})});
+  const mapPhotos=document.createElement('script');mapPhotos.src='map-photos-v15.js?v=15';document.head.appendChild(mapPhotos);
 
-  const ratingUi=document.createElement('script');
-  ratingUi.src='rating-ui-v17.js?v=17';
-  document.head.appendChild(ratingUi);
+  document.addEventListener('pargid:vsaunah-ready',()=>{cleanDemoPhotos();try{if(typeof render==='function')render()}catch(_){ }requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()})});
+  const vsaunah=document.createElement('script');vsaunah.src='vsaunah-v11.js?v=11.1';document.head.appendChild(vsaunah);
 
-  const catalogSearch=document.createElement('script');
-  catalogSearch.src='catalog-search-v18.js?v=18.4';
-  document.head.appendChild(catalogSearch);
-
-  const keepMapAlive=document.createElement('script');
-  keepMapAlive.src='favorites-map-keepalive-v14.js?v=14';
-  document.head.appendChild(keepMapAlive);
-
-  const mapReturnFix=document.createElement('script');
-  mapReturnFix.src='map-return-fix-v13.js?v=13';
-  document.head.appendChild(mapReturnFix);
-
-  const userLocation=document.createElement('script');
-  userLocation.src='user-location-v16.js?v=16';
-  document.head.appendChild(userLocation);
-
-  document.addEventListener('pargid:map-photos-ready',()=>{
-    cleanDemoPhotos();
-    try{if(typeof render==='function')render();}catch(_){ }
-    requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();removeMapBrand();});
-  });
-  const mapPhotos=document.createElement('script');
-  mapPhotos.src='map-photos-v15.js?v=15';
-  document.head.appendChild(mapPhotos);
-
-  document.addEventListener('pargid:vsaunah-ready',()=>{
-    cleanDemoPhotos();
-    try{if(typeof render==='function')render();}catch(_){ }
-    requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();removeMapBrand();});
-  });
-  const vsaunah=document.createElement('script');
-  vsaunah.src='vsaunah-v11.js?v=11.1';
-  document.head.appendChild(vsaunah);
-
-  const legacy=document.createElement('script');
-  legacy.src='sauna101-legacy-v7.js?v=8';
-  legacy.onload=()=>{cleanDemoPhotos();bootFilters();};
-  legacy.onerror=()=>{cleanDemoPhotos();bootFilters();};
-  document.head.appendChild(legacy);
+  const legacy=document.createElement('script');legacy.src='sauna101-legacy-v7.js?v=8';legacy.onload=()=>{cleanDemoPhotos();bootFilters()};legacy.onerror=()=>{cleanDemoPhotos();bootFilters()};document.head.appendChild(legacy);
 
   function bootFilters(){
     let tries=0;
@@ -100,7 +53,6 @@
       try{
         if(typeof render!=='function'||typeof data!=='function'||typeof filters==='undefined'||typeof active==='undefined')throw new Error('main not ready');
         cleanDemoPhotos();
-        removeMapBrand();
         const desired=['Все','Бассейн','Джакузи','Сауна','На дровах','Хаммам','До 1000 ₽','1000–1500 ₽','От 1500 ₽'];
         filters.splice(0,filters.length,...desired);
         const baseSearch=()=>{
@@ -124,20 +76,16 @@
         };
         if(!desired.includes(active))active='Все';
         render();
-        requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();removeMapBrand();});
-      }catch(e){if(tries<80)setTimeout(wait,40);}
+        requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()});
+      }catch(e){if(tries<80)setTimeout(wait,40)}
     };
     wait();
   }
 
   function startSourceCleanup(){
-    remove101SourceLabels();
-    cleanCallLabel();
-    removeMapBrand();
+    remove101SourceLabels();cleanCallLabel();
     const sheet=document.getElementById('sheet');
-    if(sheet)new MutationObserver(()=>requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();removeMapBrand();})).observe(sheet,{childList:true,subtree:true});
-    const top=document.getElementById('mapTop');
-    if(top)new MutationObserver(removeMapBrand).observe(top,{childList:true});
+    if(sheet)new MutationObserver(()=>requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()})).observe(sheet,{childList:true,subtree:true});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startSourceCleanup,{once:true});else startSourceCleanup();
 })();
