@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v12.5
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v12.6
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -37,6 +37,10 @@
   const favorites=document.createElement('script');
   favorites.src='favorites-v12.js?v=12.3';
   document.head.appendChild(favorites);
+
+  const mapReturnFix=document.createElement('script');
+  mapReturnFix.src='map-return-fix-v13.js?v=13';
+  document.head.appendChild(mapReturnFix);
 
   document.addEventListener('pargid:vsaunah-ready',()=>{
     cleanDemoPhotos();
