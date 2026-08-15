@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.2
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.3
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -51,6 +51,10 @@
   const mapReturnFix=document.createElement('script');
   mapReturnFix.src='map-return-fix-v13.js?v=13';
   document.head.appendChild(mapReturnFix);
+
+  const userLocation=document.createElement('script');
+  userLocation.src='user-location-v16.js?v=16';
+  document.head.appendChild(userLocation);
 
   document.addEventListener('pargid:map-photos-ready',()=>{
     cleanDemoPhotos();
