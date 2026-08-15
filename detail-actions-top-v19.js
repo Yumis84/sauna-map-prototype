@@ -1,4 +1,4 @@
-// Перенос основных действий вверх открытой карточки. v19.1
+// Перенос основных действий вверх открытой карточки. v19.2
 (function(){
   if(window.__pargidDetailActionsTopV19)return;
   window.__pargidDetailActionsTopV19=true;
@@ -20,19 +20,19 @@
     }
 
     #sheet .actions{
-      grid-template-columns:max-content minmax(0,1fr)!important;
+      grid-template-columns:1fr 1fr!important;
       gap:6px!important;
       margin-top:10px!important;
     }
 
-    /* Звонок — отдельное короткое зелёное действие. */
+    /* Звонок — зелёный и такой же ширины, как соседнее действие. */
     #sheet #call,
     #sheet .call-v4{
-      width:auto!important;
-      min-width:112px!important;
-      max-width:128px!important;
-      justify-self:start!important;
-      flex:0 0 auto!important;
+      width:100%!important;
+      min-width:0!important;
+      max-width:none!important;
+      justify-self:stretch!important;
+      flex:1 1 auto!important;
       background:#2f9e62!important;
       color:#fff!important;
       border:1px solid #45b97a!important;
