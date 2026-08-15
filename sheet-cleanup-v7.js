@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.4.1
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.5
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -47,6 +47,10 @@
   const ratingUi=document.createElement('script');
   ratingUi.src='rating-ui-v17.js?v=17';
   document.head.appendChild(ratingUi);
+
+  const catalogSearch=document.createElement('script');
+  catalogSearch.src='catalog-search-v18.js?v=18';
+  document.head.appendChild(catalogSearch);
 
   const keepMapAlive=document.createElement('script');
   keepMapAlive.src='favorites-map-keepalive-v14.js?v=14';
