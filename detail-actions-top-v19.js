@@ -1,33 +1,13 @@
-// Перенос основных действий вверх открытой карточки. v19.3
+// Перенос основных действий вверх открытой карточки. v19.4
 (function(){
   if(window.__pargidDetailActionsTopV19)return;
   window.__pargidDetailActionsTopV19=true;
-
-  // Точечные коррекции после повторной сверки названия + адреса.
-  // Применяются поверх ранних телефонных дополнений из sheet-cleanup.
-  const PHONE_CORRECTIONS={
-    'Околица':'+74012377507',
-    'Калина':'+74012770463',
-    'Пирс':'+74012385098',
-    'Орион':'+79814604507'
-  };
-
-  function applyPhoneCorrections(){
-    if(!Array.isArray(window.VENUES))return;
-    for(const v of window.VENUES){
-      const phone=PHONE_CORRECTIONS[v.name];
-      if(phone)v.phone=phone;
-    }
-  }
-
-  applyPhoneCorrections();
 
   const style=document.createElement('style');
   style.textContent=`
     #sheet .contact-v4.contact-top-v19{margin:10px 0 14px!important;gap:6px!important}
     #sheet .contact-v4.contact-top-v19 + .desc-v4{margin-top:0!important}
 
-    /* Делаем действия визуально легче и компактнее. */
     #sheet .contact-v4 button,
     #sheet .actions button{
       min-height:38px!important;
@@ -44,7 +24,6 @@
       margin-top:10px!important;
     }
 
-    /* Звонок — зелёный и такой же ширины, как соседнее действие. */
     #sheet #call,
     #sheet .call-v4{
       width:100%!important;
@@ -67,7 +46,6 @@
   document.head.appendChild(style);
 
   function moveActions(){
-    applyPhoneCorrections();
     const detail=document.querySelector('#sheet .detail');
     const contact=detail?.querySelector('.contact-v4');
     if(!detail||!contact||contact.dataset.topV19==='1')return;
