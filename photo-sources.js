@@ -1,4 +1,4 @@
-// Проверенные официальные фото-источники. Сверено 15.08.2026.
+// Источники и галереи. Сверено 15.08.2026.
 window.PHOTO_SOURCES = {
   "Котбус": {url:"https://hotel-cotbus.ru/", label:"Официальный сайт · Котбус"},
   "Дейма": {url:"https://hotel-deima.ru/", label:"Официальный сайт · Дейма"},
@@ -17,8 +17,6 @@ window.PHOTO_SOURCES = {
   "Граф Орлов": {url:"https://www.sauna39.ru/", label:"Официальный сайт оператора · Граф Орлов"}
 };
 
-// Реальные фотографии из карточек Баня.ру. Пользователь подтвердил разрешение на их использование в проекте.
-// Файлы остаются на публичном CDN Баня.ру/Yandex Cloud; для каждой фотографии сохранена ссылка на карточку-источник.
 window.BANYA_PHOTOS = {
   "Статус": {
     img:"https://storage.yandexcloud.net/data.banya.ru/uploads/3e9cc737-514c-4f25-9f6a-b08f74bf3e4a/018e0983-3c39-149b-201a-12688cd4a440/LG.webp",
@@ -106,11 +104,11 @@ if (Array.isArray(window.VENUES)) {
   }
 }
 
-// Текущая продуктовая версия: только карта + каталог. Бронирование и заявки временно скрыты.
+// MVP: карта + каталог. Заявки, бронирование и внешняя кнопка фото сейчас убраны.
 (function simplifyClientMvp(){
   const style = document.createElement('style');
   style.textContent = `
-    [data-s="requests"], #requests, #bookModal, #book { display:none !important; }
+    [data-s="requests"], #requests, #bookModal, #book, .photos { display:none !important; }
     .nav { grid-template-columns:repeat(2,1fr) !important; }
     #call { grid-column:span 2; }
     .hero:after { pointer-events:none; }
@@ -128,9 +126,18 @@ if (Array.isArray(window.VENUES)) {
   `;
   document.head.appendChild(style);
 
+  function removePausedActions(root=document){
+    root.querySelectorAll('#book, .photos').forEach(el => el.remove());
+    root.querySelectorAll('button').forEach(btn => {
+      const text = (btn.textContent || '').trim().toLowerCase();
+      if (text.includes('запросить бронь') || text.includes('смотреть официальные фото')) btn.remove();
+    });
+  }
+
   function enhanceGallery(){
     const sheet = document.getElementById('sheet');
     if (!sheet) return;
+    removePausedActions(sheet);
     const hero = sheet.querySelector('.hero');
     const title = sheet.querySelector('.detail h2');
     if (!hero || !title || hero.dataset.galleryReady === '1') return;
@@ -175,18 +182,21 @@ if (Array.isArray(window.VENUES)) {
   }
 
   function start(){
+    const sheet = document.getElementById('sheet');
+    removePausedActions();
     enhanceGallery();
-    new MutationObserver(enhanceGallery).observe(document.getElementById('sheet') || document.body, {childList:true, subtree:true});
+    new MutationObserver(() => {
+      removePausedActions(sheet || document);
+      enhanceGallery();
+    }).observe(sheet || document.body, {childList:true, subtree:true});
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
   else start();
 })();
 
-// Не показываем пользователю технический фильтр по источнику фотографий.
+// Не показываем технический фильтр по источнику фотографий.
 (function hidePhotoSourceFilter(){
-  const removeChip = () => {
-    document.querySelectorAll('[data-f="📷 Официальные фото"]').forEach(el => el.remove());
-  };
+  const removeChip = () => document.querySelectorAll('[data-f="📷 Официальные фото"]').forEach(el => el.remove());
   const start = () => {
     removeChip();
     new MutationObserver(removeChip).observe(document.body, {childList:true, subtree:true});
@@ -195,7 +205,7 @@ if (Array.isArray(window.VENUES)) {
   else start();
 })();
 
-// Синхронизируем видимые карточки/поиск с метками Leaflet на карте.
+// Фильтры и поиск синхронизированы с видимыми метками Leaflet.
 (function syncMapWithFilters(){
   function syncMapMarkers(){
     try {
@@ -227,7 +237,6 @@ if (Array.isArray(window.VENUES)) {
         syncMapMarkers();
       };
     }
-
     setTimeout(syncMapMarkers, 0);
   }
 
