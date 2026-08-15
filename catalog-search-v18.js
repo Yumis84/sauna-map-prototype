@@ -1,16 +1,13 @@
-// Поиск в каталоге и на карте: один крестик, синхронизация и чистая карта. v18.4
+// Поиск в каталоге и на карте: один крестик, синхронизация и чистая карта. v18.5
 (function(){
-  if(window.__pargidCatalogSearchV184)return;
-  window.__pargidCatalogSearchV184=true;
+  if(window.__pargidCatalogSearchV185)return;
+  window.__pargidCatalogSearchV185=true;
 
   const style=document.createElement('style');
   style.textContent=`
-    /* На карте оставляем только поиск и фильтры — без верхней плашки ПарГид. */
-    #mapTop .bar{display:none!important}
     #mapTop{padding-top:8px!important}
     #mapTop .search{margin-top:0!important;position:relative}
 
-    /* Каталог всегда перекрывает карту; верх карты не должен просвечивать поверх него. */
     #catalog.on{z-index:950!important}
     body:has(#catalog.on) #mapTop,
     #app:has(#catalog.on) #mapTop{display:none!important}
@@ -25,23 +22,16 @@
     #catalog .catalog-search-clear{position:absolute;z-index:4;right:5px;top:5px;width:36px;height:36px;border:0;border-radius:11px;background:transparent;color:#a9b5af;font-size:25px;line-height:1;display:none;place-items:center;padding:0}
     #catalog .catalog-search-clear:active{color:#fff;background:#ffffff0d}
 
-    #mapTop .search #q{padding-right:48px!important}
-    #mapTop .map-search-clear{position:absolute!important;z-index:999!important;right:8px!important;top:50%!important;transform:translateY(-50%)!important;width:36px!important;height:36px!important;border:0!important;border-radius:11px!important;background:transparent!important;color:#d7dfdb!important;font-size:27px!important;font-weight:400!important;line-height:1!important;display:none;place-items:center;padding:0!important;pointer-events:auto!important}
+    #mapTop .search #q{padding-right:50px!important}
+    #mapTop .map-search-clear{position:absolute!important;z-index:9999!important;right:7px!important;top:50%!important;transform:translateY(-50%)!important;width:38px!important;height:38px!important;border:0!important;border-radius:11px!important;background:transparent!important;color:#d7dfdb!important;font-size:28px!important;font-weight:400!important;line-height:1!important;display:grid!important;place-items:center!important;padding:0!important;pointer-events:auto!important;opacity:.42;transition:opacity .15s ease,background .15s ease}
+    #mapTop .search.has-query .map-search-clear{opacity:1}
     #mapTop .map-search-clear:active{background:#ffffff12!important;color:#fff!important}
   `;
   document.head.appendChild(style);
 
   let syncing=false;
 
-  function stripMapBrand(){
-    const top=document.getElementById('mapTop');
-    if(!top)return false;
-    top.querySelectorAll('.bar').forEach(el=>el.remove());
-    return true;
-  }
-
   function ensureSearch(){
-    stripMapBrand();
     const catalog=document.getElementById('catalog');
     const head=catalog?.querySelector('.head');
     const mapInput=document.getElementById('q');
@@ -77,14 +67,15 @@
       const value=String(mapInput.value||'');
       const has=value.length>0;
       if(input.value!==value)input.value=value;
-      mapClear.style.setProperty('display',has?'grid':'none','important');
+      mapWrap.classList.toggle('has-query',has);
+      mapClear.disabled=!has;
+      mapClear.setAttribute('aria-disabled',has?'false':'true');
       clear.style.setProperty('display',has?'grid':'none','important');
     };
 
-    if(!wrap.dataset.bound184){
-      wrap.dataset.bound184='1';
+    if(!wrap.dataset.bound185){
+      wrap.dataset.bound185='1';
       input.value=mapInput.value||'';
-
       input.addEventListener('input',()=>{
         if(syncing)return;
         syncing=true;
@@ -93,43 +84,32 @@
         mapInput.dispatchEvent(new Event('input',{bubbles:true}));
         syncing=false;
       });
-
       clear.addEventListener('click',e=>{
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault();e.stopPropagation();
         syncing=true;
-        input.value='';
-        mapInput.value='';
-        updateState();
+        input.value='';mapInput.value='';updateState();
         mapInput.dispatchEvent(new Event('input',{bubbles:true}));
-        syncing=false;
-        input.focus();
+        syncing=false;input.focus();
       });
     }
 
-    if(!mapInput.dataset.searchBound184){
-      mapInput.dataset.searchBound184='1';
+    if(!mapInput.dataset.searchBound185){
+      mapInput.dataset.searchBound185='1';
       mapInput.addEventListener('input',()=>{
         if(syncing)return;
-        syncing=true;
-        input.value=mapInput.value||'';
-        updateState();
-        syncing=false;
+        syncing=true;input.value=mapInput.value||'';updateState();syncing=false;
       });
     }
 
-    if(!mapClear.dataset.bound184){
-      mapClear.dataset.bound184='1';
+    if(!mapClear.dataset.bound185){
+      mapClear.dataset.bound185='1';
       mapClear.addEventListener('click',e=>{
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault();e.stopPropagation();
+        if(!mapInput.value)return;
         syncing=true;
-        mapInput.value='';
-        input.value='';
-        updateState();
+        mapInput.value='';input.value='';updateState();
         mapInput.dispatchEvent(new Event('input',{bubbles:true}));
-        syncing=false;
-        mapInput.focus();
+        syncing=false;mapInput.focus();
       });
     }
 
@@ -138,7 +118,6 @@
   }
 
   function guardScreens(){
-    stripMapBrand();
     const catalog=document.getElementById('catalog');
     const top=document.getElementById('mapTop');
     if(!catalog||!top)return;
@@ -149,18 +128,12 @@
     let tries=0;
     const wait=()=>{
       tries++;
-      stripMapBrand();
       if(!ensureSearch()&&tries<120){setTimeout(wait,50);return}
       guardScreens();
       const catalog=document.getElementById('catalog');
-      if(catalog&&!catalog.dataset.searchGuard184){
-        catalog.dataset.searchGuard184='1';
+      if(catalog&&!catalog.dataset.searchGuard185){
+        catalog.dataset.searchGuard185='1';
         new MutationObserver(guardScreens).observe(catalog,{attributes:true,attributeFilter:['class']});
-      }
-      const top=document.getElementById('mapTop');
-      if(top&&!top.dataset.brandGuard184){
-        top.dataset.brandGuard184='1';
-        new MutationObserver(stripMapBrand).observe(top,{childList:true,subtree:false});
       }
     };
     wait();
