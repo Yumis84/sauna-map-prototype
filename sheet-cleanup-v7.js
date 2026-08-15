@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.8
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.9
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -34,7 +34,12 @@
     });
   }
 
+  function removeMapBrand(){
+    document.querySelectorAll('#mapTop .bar').forEach(el=>el.remove());
+  }
+
   cleanDemoPhotos();
+  removeMapBrand();
 
   const swipe=document.createElement('script');
   swipe.src='venue-swipe-v9.js?v=9.2';
@@ -49,7 +54,7 @@
   document.head.appendChild(ratingUi);
 
   const catalogSearch=document.createElement('script');
-  catalogSearch.src='catalog-search-v18.js?v=18.3';
+  catalogSearch.src='catalog-search-v18.js?v=18.4';
   document.head.appendChild(catalogSearch);
 
   const keepMapAlive=document.createElement('script');
@@ -67,7 +72,7 @@
   document.addEventListener('pargid:map-photos-ready',()=>{
     cleanDemoPhotos();
     try{if(typeof render==='function')render();}catch(_){ }
-    requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();});
+    requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();removeMapBrand();});
   });
   const mapPhotos=document.createElement('script');
   mapPhotos.src='map-photos-v15.js?v=15';
@@ -76,7 +81,7 @@
   document.addEventListener('pargid:vsaunah-ready',()=>{
     cleanDemoPhotos();
     try{if(typeof render==='function')render();}catch(_){ }
-    requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();});
+    requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();removeMapBrand();});
   });
   const vsaunah=document.createElement('script');
   vsaunah.src='vsaunah-v11.js?v=11.1';
@@ -95,6 +100,7 @@
       try{
         if(typeof render!=='function'||typeof data!=='function'||typeof filters==='undefined'||typeof active==='undefined')throw new Error('main not ready');
         cleanDemoPhotos();
+        removeMapBrand();
         const desired=['Все','Бассейн','Джакузи','Сауна','На дровах','Хаммам','До 1000 ₽','1000–1500 ₽','От 1500 ₽'];
         filters.splice(0,filters.length,...desired);
         const baseSearch=()=>{
@@ -118,7 +124,7 @@
         };
         if(!desired.includes(active))active='Все';
         render();
-        requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();});
+        requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();removeMapBrand();});
       }catch(e){if(tries<80)setTimeout(wait,40);}
     };
     wait();
@@ -127,8 +133,11 @@
   function startSourceCleanup(){
     remove101SourceLabels();
     cleanCallLabel();
+    removeMapBrand();
     const sheet=document.getElementById('sheet');
-    if(sheet)new MutationObserver(()=>requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();})).observe(sheet,{childList:true,subtree:true});
+    if(sheet)new MutationObserver(()=>requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();removeMapBrand();})).observe(sheet,{childList:true,subtree:true});
+    const top=document.getElementById('mapTop');
+    if(top)new MutationObserver(removeMapBrand).observe(top,{childList:true});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startSourceCleanup,{once:true});else startSourceCleanup();
 })();
