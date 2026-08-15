@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Фото пока нет</title>
+  <desc id="desc">Нейтральная заглушка ПарГид для заведения без подтвержденной фотографии</desc>
+  <rect width="1200" height="800" fill="#0f1613"/>
+  <circle cx="600" cy="315" r="105" fill="#18221e" stroke="#2a3a32" stroke-width="6"/>
+  <text x="600" y="350" text-anchor="middle" font-size="96" font-family="Arial, sans-serif" fill="#f2a93b">♨</text>
+  <text x="600" y="500" text-anchor="middle" font-size="54" font-weight="700" font-family="Arial, sans-serif" fill="#eef3f0">Фото пока нет</text>
+  <text x="600" y="558" text-anchor="middle" font-size="28" font-family="Arial, sans-serif" fill="#8fa099">Добавим, когда найдём фото именно этого заведения</text>
+</svg>
