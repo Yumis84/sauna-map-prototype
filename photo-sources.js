@@ -15,6 +15,5 @@ window.PHOTO_SOURCES = {
   "Marton Sauna": {url:"https://hotel-marton.ru/kaliningrad/marton-palace/", label:"Официальный сайт · Marton Palace"},
   "Ашман Парк": {url:"https://www.sauna39.ru/", label:"Официальный сайт оператора · Ашман Парк"},
   "Статус": {url:"https://www.sauna39.ru/", label:"Официальный сайт оператора · Статус"},
-  "Граф Орлов": {url:"https://www.sauna39.ru/", label:"Официальный сайт оператора · Граф Орлов"},
-  "Банный дворЪ": {url:"https://suvorovskaya-banya.ru/gallery", label:"Официальная галерея комплекса на Ялтинской · Суворовская баня"}
+  "Граф Орлов": {url:"https://www.sauna39.ru/", label:"Официальный сайт оператора · Граф Орлов"}
 };
