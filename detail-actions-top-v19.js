@@ -1,4 +1,4 @@
-// Перенос основных действий вверх открытой карточки. v19.3
+// Перенос основных действий вверх открытой карточки. v19.2
 (function(){
   if(window.__pargidDetailActionsTopV19)return;
   window.__pargidDetailActionsTopV19=true;
@@ -25,17 +25,6 @@
       margin-top:10px!important;
     }
 
-    /* Если телефона нет, оставшееся основное действие занимает всю строку. */
-    #sheet .actions.no-phone-v19{
-      grid-template-columns:1fr!important;
-    }
-    #sheet .actions.no-phone-v19 > button:not(#call),
-    #sheet .contact-v4.no-phone-v19 > button:not(.call-v4){
-      width:100%!important;
-      max-width:none!important;
-      flex:1 1 100%!important;
-    }
-
     /* Звонок — зелёный и такой же ширины, как соседнее действие. */
     #sheet #call,
     #sheet .call-v4{
@@ -58,47 +47,22 @@
   `;
   document.head.appendChild(style);
 
-  function currentVenue(detail){
-    const name=detail?.querySelector('h2')?.textContent?.trim();
-    if(!name||!Array.isArray(window.VENUES))return null;
-    return window.VENUES.find(v=>v.name===name)||null;
-  }
-
-  function syncPhoneAction(){
-    const detail=document.querySelector('#sheet .detail');
-    if(!detail)return;
-
-    const call=detail.querySelector('#call,.call-v4');
-    if(!call)return;
-
-    const venue=currentVenue(detail);
-    if(!venue)return;
-
-    const container=call.closest('.actions,.contact-v4');
-    const hasPhone=!!String(venue.phone||'').trim();
-
-    call.hidden=!hasPhone;
-    call.style.display=hasPhone?'':'none';
-    if(container)container.classList.toggle('no-phone-v19',!hasPhone);
-  }
-
   function moveActions(){
     const detail=document.querySelector('#sheet .detail');
     const contact=detail?.querySelector('.contact-v4');
-    if(detail&&contact&&contact.dataset.topV19!=='1'){
-      const facts=detail.querySelector('.facts');
-      const address=[...detail.querySelectorAll(':scope > .muted')].find(el=>{
-        const text=(el.textContent||'').trim();
-        return text&&!/^Источник/i.test(text);
-      });
-      const anchor=facts||address||detail.querySelector('h2');
-      if(anchor){
-        anchor.insertAdjacentElement('afterend',contact);
-        contact.classList.add('contact-top-v19');
-        contact.dataset.topV19='1';
-      }
-    }
-    syncPhoneAction();
+    if(!detail||!contact||contact.dataset.topV19==='1')return;
+
+    const facts=detail.querySelector('.facts');
+    const address=[...detail.querySelectorAll(':scope > .muted')].find(el=>{
+      const text=(el.textContent||'').trim();
+      return text&&!/^Источник/i.test(text);
+    });
+    const anchor=facts||address||detail.querySelector('h2');
+    if(!anchor)return;
+
+    anchor.insertAdjacentElement('afterend',contact);
+    contact.classList.add('contact-top-v19');
+    contact.dataset.topV19='1';
   }
 
   function boot(){
