@@ -50,3 +50,11 @@
     if(mapBtn)restoreMapUi();
   });
 })();
+
+(function loadParGidN8nChat(){
+  if(document.querySelector('script[data-pargid-n8n-chat="23"]'))return;
+  const script=document.createElement('script');
+  script.src='n8n-chat-v23.js?v=23.1';
+  script.dataset.pargidN8nChat='23';
+  document.head.appendChild(script);
+})();
