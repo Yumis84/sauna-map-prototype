@@ -1,15 +1,15 @@
-// Надёжное закрытие нижней карточки свайпом для Android/iOS. v2
+// Надёжное закрытие нижней карточки свайпом для Android/iOS. v4
 (function(){
   const style=document.createElement('style');
   style.textContent=`
     .nav button{
-      margin:5px;border-radius:15px;
       background:transparent!important;color:#8e9a94!important;
-      font-weight:700;transition:background .16s ease,color .16s ease,transform .16s ease;
+      box-shadow:none!important;font-weight:700;
+      transition:color .16s ease,transform .16s ease;
     }
     .nav button.on{
-      background:#f2a93b!important;color:#241707!important;
-      font-weight:900;box-shadow:0 4px 14px #0005;
+      background:transparent!important;color:#ffd37f!important;
+      box-shadow:none!important;font-weight:900;
     }
     .nav button:active{transform:scale(.98)}
     .sheet{will-change:transform;overscroll-behavior-y:contain}
