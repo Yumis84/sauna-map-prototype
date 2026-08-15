@@ -1,14 +1,15 @@
-// Bootstrap for existing UI fixes + Favorites + embedded n8n chat tab. v25
+// Bootstrap for existing UI fixes + Favorites + embedded n8n chat tab. v26
 (function(){
-  if(window.__pargidBootstrapV25)return;
-  window.__pargidBootstrapV25=true;
+  if(window.__pargidBootstrapV26)return;
+  window.__pargidBootstrapV26=true;
 
   const scripts=[
     'sheet-cleanup-v7-core.js?v=13.19-core',
     'favorites-v12.js?v=12.6',
     'favorites-map-keepalive-v14.js?v=14',
     'map-return-fix-v13.js?v=13',
-    'n8n-chat-v23.js?v=25.0'
+    'n8n-chat-v23.js?v=25.0',
+    'chat-style-v26.js?v=26.0'
   ];
 
   function loadOne(src){
