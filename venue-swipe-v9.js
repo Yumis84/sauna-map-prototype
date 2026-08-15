@@ -1,4 +1,4 @@
-// Горизонтальный свайп между заведениями в открытой карточке. v9
+// Горизонтальный свайп между заведениями в открытой карточке. v9.2
 (function(){
   if(window.__venueSwipeV9)return;
   window.__venueSwipeV9=true;
@@ -21,6 +21,12 @@
   }
 
   function currentList(){
+    if(window.PARGID_FAVORITES_MODE){
+      try{
+        const ids=new Set((JSON.parse(localStorage.getItem('pargid_favs')||'[]')||[]).map(Number));
+        return (window.VENUES||[]).filter(v=>ids.has(Number(v.id)));
+      }catch(_){return []}
+    }
     try{if(typeof data==='function')return data()}catch(_){ }
     return window.VENUES||[];
   }
@@ -48,6 +54,12 @@
 
   function alignUnderlying(id){
     requestAnimationFrame(()=>{
+      const favorites=document.getElementById('favorites');
+      if(favorites?.classList.contains('on')){
+        const item=favorites.querySelector(`[data-favorite-id="${id}"]`);
+        if(item)item.scrollIntoView({block:'center',inline:'nearest',behavior:'smooth'});
+        return;
+      }
       const catalog=document.getElementById('catalog');
       if(catalog?.classList.contains('on')){
         const item=document.querySelector(`#list [data-id="${id}"]`);
