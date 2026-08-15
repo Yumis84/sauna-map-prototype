@@ -1,8 +1,33 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.10
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.11
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
   const isPlaceholder=url=>/venue-placeholder\.svg/i.test(String(url||''));
+
+  // Телефоны, собранные/обновлённые 15.08.2026. Существующие номера не перезаписываем.
+  const PHONE_UPDATES={
+    'Котбус':'+74012585888',
+    'Навигатор':'+74012566222',
+    'Кристалл':'+74012533434',
+    'Ника':'+74012904019',
+    'K8 SPA':'+74012338338',
+    'Высший разряд':'+74012300013',
+    'Карусель':'+74012767693',
+    'Комильфо':'+74012751015',
+    'Милана':'+74012772114',
+    'Эфис':'+74012557678',
+    'Стиль':'+74012916331',
+    'Тазик':'+74012386620',
+    'У Каштана':'+74012377279'
+  };
+
+  function applyPhoneUpdates(){
+    if(!Array.isArray(window.VENUES))return;
+    for(const v of window.VENUES){
+      const phone=PHONE_UPDATES[v.name];
+      if(phone&&!v.phone)v.phone=phone;
+    }
+  }
 
   function cleanDemoPhotos(){
     if(!Array.isArray(window.VENUES))return;
@@ -28,6 +53,7 @@
     });
   }
 
+  applyPhoneUpdates();
   cleanDemoPhotos();
 
   const swipe=document.createElement('script');swipe.src='venue-swipe-v9.js?v=9.2';document.head.appendChild(swipe);
@@ -38,13 +64,13 @@
   const mapReturnFix=document.createElement('script');mapReturnFix.src='map-return-fix-v13.js?v=13';document.head.appendChild(mapReturnFix);
   const userLocation=document.createElement('script');userLocation.src='user-location-v16.js?v=16';document.head.appendChild(userLocation);
 
-  document.addEventListener('pargid:map-photos-ready',()=>{cleanDemoPhotos();try{if(typeof render==='function')render()}catch(_){ }requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()})});
+  document.addEventListener('pargid:map-photos-ready',()=>{applyPhoneUpdates();cleanDemoPhotos();try{if(typeof render==='function')render()}catch(_){ }requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()})});
   const mapPhotos=document.createElement('script');mapPhotos.src='map-photos-v15.js?v=15';document.head.appendChild(mapPhotos);
 
-  document.addEventListener('pargid:vsaunah-ready',()=>{cleanDemoPhotos();try{if(typeof render==='function')render()}catch(_){ }requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()})});
+  document.addEventListener('pargid:vsaunah-ready',()=>{applyPhoneUpdates();cleanDemoPhotos();try{if(typeof render==='function')render()}catch(_){ }requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()})});
   const vsaunah=document.createElement('script');vsaunah.src='vsaunah-v11.js?v=11.1';document.head.appendChild(vsaunah);
 
-  const legacy=document.createElement('script');legacy.src='sauna101-legacy-v7.js?v=8';legacy.onload=()=>{cleanDemoPhotos();bootFilters()};legacy.onerror=()=>{cleanDemoPhotos();bootFilters()};document.head.appendChild(legacy);
+  const legacy=document.createElement('script');legacy.src='sauna101-legacy-v7.js?v=8';legacy.onload=()=>{applyPhoneUpdates();cleanDemoPhotos();bootFilters()};legacy.onerror=()=>{applyPhoneUpdates();cleanDemoPhotos();bootFilters()};document.head.appendChild(legacy);
 
   function bootFilters(){
     let tries=0;
@@ -52,6 +78,7 @@
       tries++;
       try{
         if(typeof render!=='function'||typeof data!=='function'||typeof filters==='undefined'||typeof active==='undefined')throw new Error('main not ready');
+        applyPhoneUpdates();
         cleanDemoPhotos();
         const desired=['Все','Бассейн','Джакузи','Сауна','На дровах','Хаммам','До 1000 ₽','1000–1500 ₽','От 1500 ₽'];
         filters.splice(0,filters.length,...desired);
@@ -83,9 +110,9 @@
   }
 
   function startSourceCleanup(){
-    remove101SourceLabels();cleanCallLabel();
+    applyPhoneUpdates();remove101SourceLabels();cleanCallLabel();
     const sheet=document.getElementById('sheet');
-    if(sheet)new MutationObserver(()=>requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel()})).observe(sheet,{childList:true,subtree:true});
+    if(sheet)new MutationObserver(()=>requestAnimationFrame(()=>{applyPhoneUpdates();remove101SourceLabels();cleanCallLabel()})).observe(sheet,{childList:true,subtree:true});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startSourceCleanup,{once:true});else startSourceCleanup();
 })();
