@@ -1,4 +1,4 @@
-// Verified Vsaunah.ru venue data, photos and attribution. v11
+// Verified Vsaunah.ru venue data and photos. v11.1
 (function(){
   const SOURCE={
     'Афина':{
@@ -111,27 +111,22 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    .vsaunah-source-v11{display:inline-flex;align-items:center;gap:4px;margin-top:12px;color:#9eaaa4;font-size:12px;line-height:1.4;text-decoration:none;border-bottom:1px dotted #617069;padding-bottom:1px}
-    .vsaunah-source-v11:hover{color:#d9e2dd;border-bottom-color:#9eaaa4}
+    .vsaunah-site-credit{padding:18px 4px 8px;text-align:center;font-size:10px;color:#75817b}
+    .vsaunah-site-credit a{color:#8e9a94;text-decoration:none;border-bottom:1px dotted #58645e}
   `;
   document.head.appendChild(style);
 
-  function addAttribution(){
-    const detail=document.querySelector('#sheet .detail');
-    const title=detail?.querySelector('h2')?.textContent?.trim();
-    const desc=detail?.querySelector('.desc-v4');
-    if(!detail||!title||!desc)return;
-    const v=(window.VENUES||[]).find(x=>x.name===title);
-    if(!v?.vsaunahUrl)return;
-    const old=desc.querySelector('.vsaunah-source-v11');
-    if(old){old.href=v.vsaunahUrl;return;}
-    const a=document.createElement('a');
-    a.className='vsaunah-source-v11';
-    a.href=v.vsaunahUrl;
-    a.target='_blank';
-    a.rel='noopener';
-    a.textContent='Источник данных и фото: Vsaunah.ru ↗';
-    desc.appendChild(a);
+  function ensureSiteCredit(){
+    const catalog=document.getElementById('catalog');
+    if(!catalog||catalog.querySelector('.vsaunah-site-credit'))return;
+    const credit=document.createElement('div');
+    credit.className='vsaunah-site-credit';
+    credit.innerHTML='<a href="https://kaliningrad.vsaunah.ru/" target="_blank" rel="noopener">Vsaunah.ru</a>';
+    catalog.appendChild(credit);
+  }
+
+  function removeCardAttribution(){
+    document.querySelectorAll('#sheet .vsaunah-source-v11').forEach(el=>el.remove());
   }
 
   let tries=0;
@@ -139,9 +134,13 @@
     tries++;
     if(!apply()&&tries<80){setTimeout(start,40);return;}
     try{if(typeof render==='function')render();}catch(_){ }
-    addAttribution();
+    ensureSiteCredit();
+    removeCardAttribution();
   };
   start();
 
-  new MutationObserver(()=>requestAnimationFrame(addAttribution)).observe(document.documentElement,{childList:true,subtree:true});
+  new MutationObserver(()=>requestAnimationFrame(()=>{
+    ensureSiteCredit();
+    removeCardAttribution();
+  })).observe(document.documentElement,{childList:true,subtree:true});
 })();
