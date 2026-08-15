@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + verified photo sources. v11.1
+// UI cleanup loader + filters + venue swipe + verified photo sources. v11.2
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -21,6 +21,13 @@
     }
   }
 
+  function remove101SourceLabels(){
+    document.querySelectorAll('#sheet .detail .muted').forEach(el=>{
+      const text=(el.textContent||'').trim();
+      if(/^Источник данных:/i.test(text)&&/(101SAUNA|101sauna\.ru фото)/i.test(text))el.remove();
+    });
+  }
+
   cleanDemoPhotos();
 
   const swipe=document.createElement('script');
@@ -30,6 +37,7 @@
   document.addEventListener('pargid:vsaunah-ready',()=>{
     cleanDemoPhotos();
     try{if(typeof render==='function')render();}catch(_){ }
+    requestAnimationFrame(remove101SourceLabels);
   });
   const vsaunah=document.createElement('script');
   vsaunah.src='vsaunah-v11.js?v=11';
@@ -71,8 +79,16 @@
         };
         if(!desired.includes(active))active='Все';
         render();
+        requestAnimationFrame(remove101SourceLabels);
       }catch(e){if(tries<80)setTimeout(wait,40);}
     };
     wait();
   }
+
+  function startSourceCleanup(){
+    remove101SourceLabels();
+    const sheet=document.getElementById('sheet');
+    if(sheet)new MutationObserver(()=>requestAnimationFrame(remove101SourceLabels)).observe(sheet,{childList:true,subtree:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startSourceCleanup,{once:true});else startSourceCleanup();
 })();
