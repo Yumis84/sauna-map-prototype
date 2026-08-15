@@ -1,4 +1,4 @@
-// Избранное: отдельная вкладка, SVG-сердечки и синхронизация состояния. v12.5
+// Избранное: отдельная вкладка, SVG-сердечки и синхронизация состояния. v12.6
 (function(){
   if(window.__pargidFavoritesV12)return;
   window.__pargidFavoritesV12=true;
@@ -15,7 +15,9 @@
     #sheet .fav{display:grid!important;place-items:center;color:#ffd37f!important}
     #sheet .fav .heart-svg{width:25px;height:25px}
     #list .item{position:relative}
-    #list .catalog-fav,#favorites .fav-remove{position:absolute;z-index:4;right:10px;top:10px;width:38px;height:38px;border:0;border-radius:50%;background:#09100dcc;color:#ffd37f;display:grid;place-items:center;box-shadow:0 3px 12px #0005}
+    #list .catalog-fav,#favorites .fav-remove{position:absolute;z-index:4;right:10px;top:10px;width:38px;height:38px;border-radius:50%;background:#09100dcc;color:#ffd37f;display:grid;place-items:center;box-shadow:0 3px 12px #0005}
+    #list .catalog-fav{pointer-events:none;user-select:none}
+    #favorites .fav-remove{border:0}
     #list .catalog-fav .heart-svg,#favorites .fav-remove .heart-svg{width:22px;height:22px}
     #list .item .ct,#favorites .favorite-item .ct{padding-right:44px}
     #favorites .favorite-empty{padding:64px 18px;text-align:center;color:#a9b5af;line-height:1.55}
@@ -102,23 +104,19 @@
     document.querySelectorAll('#list .item[data-id]').forEach(item=>{
       const id=Number(item.dataset.id);
       if(!Number.isFinite(id))return;
-      const venue=(window.VENUES||[]).find(v=>Number(v.id)===id);
-      let btn=item.querySelector('.catalog-fav');
-      if(!btn){
-        btn=document.createElement('button');
-        btn.type='button';
-        btn.className='catalog-fav';
-        btn.dataset.catalogFav=String(id);
-        item.appendChild(btn);
-        btn.addEventListener('click',e=>{
-          e.preventDefault();
-          e.stopPropagation();
-          toggleFavorite(id,true);
-        });
+      let indicator=item.querySelector('.catalog-fav');
+      if(!indicator){
+        indicator=document.createElement('span');
+        indicator.className='catalog-fav';
+        indicator.setAttribute('aria-hidden','true');
+        item.appendChild(indicator);
       }
       const filled=ids.has(id);
-      btn.innerHTML=heartSvg(filled);
-      btn.setAttribute('aria-label',filled?`Удалить ${venue?.name||'заведение'} из избранного`:`Добавить ${venue?.name||'заведение'} в избранное`);
+      const state=filled?'1':'0';
+      if(indicator.dataset.filled!==state){
+        indicator.dataset.filled=state;
+        indicator.innerHTML=heartSvg(filled);
+      }
     });
   }
 
@@ -154,7 +152,11 @@
     const v=(window.VENUES||[]).find(x=>x.name===title),heart=document.querySelector('#sheet .fav');
     if(v&&heart){
       const filled=favIds().has(Number(v.id));
-      heart.innerHTML=heartSvg(filled);
+      const state=filled?'1':'0';
+      if(heart.dataset.filled!==state){
+        heart.dataset.filled=state;
+        heart.innerHTML=heartSvg(filled);
+      }
       heart.setAttribute('aria-label',filled?'Удалить из избранного':'Добавить в избранное');
     }
   }
@@ -227,7 +229,7 @@
       if(sheet)new MutationObserver(()=>requestAnimationFrame(syncOpenHeart)).observe(sheet,{childList:true,subtree:true});
 
       const list=document.getElementById('list');
-      if(list)new MutationObserver(()=>requestAnimationFrame(decorateCatalog)).observe(list,{childList:true,subtree:true});
+      if(list)new MutationObserver(()=>requestAnimationFrame(decorateCatalog)).observe(list,{childList:true});
 
       window.addEventListener('storage',e=>{if(e.key===KEY)refreshFavoriteUi()});
     };
