@@ -1,10 +1,15 @@
-// Поиск в каталоге и на карте: синхронизация, очистка и защита экранов. v18.2
+// Поиск в каталоге и на карте: один крестик, синхронизация и чистая карта. v18.3
 (function(){
-  if(window.__pargidCatalogSearchV182)return;
-  window.__pargidCatalogSearchV182=true;
+  if(window.__pargidCatalogSearchV183)return;
+  window.__pargidCatalogSearchV183=true;
 
   const style=document.createElement('style');
   style.textContent=`
+    /* На карте оставляем только поиск и фильтры — без верхней плашки ПарГид. */
+    #mapTop .bar{display:none!important}
+    #mapTop{padding-top:8px!important}
+    #mapTop .search{margin-top:0!important;position:relative}
+
     /* Каталог всегда перекрывает карту; верх карты не должен просвечивать поверх него. */
     #catalog.on{z-index:950!important}
     body:has(#catalog.on) #mapTop,
@@ -13,18 +18,16 @@
     #app:has(#catalog.on) #cards{display:none!important}
 
     #catalog .catalog-search-wrap{position:relative;margin:0 0 14px}
-    #catalog .catalog-search{width:100%;height:46px;border:1px solid #ffffff16;border-radius:15px;background:#111815;color:#f4f7f5;padding:0 46px 0 14px;outline:none;box-shadow:0 8px 24px #0003}
+    #catalog .catalog-search{width:100%;height:46px;border:1px solid #ffffff16;border-radius:15px;background:#111815;color:#f4f7f5;padding:0 46px 0 14px;outline:none;box-shadow:0 8px 24px #0003;-webkit-appearance:none;appearance:none}
+    #catalog .catalog-search::-webkit-search-cancel-button,#catalog .catalog-search::-webkit-search-decoration{-webkit-appearance:none;display:none}
     #catalog .catalog-search::placeholder{color:#829089}
     #catalog .catalog-search:focus{border-color:#f2a93b88;box-shadow:0 0 0 3px #f2a93b18,0 8px 24px #0003}
-    #catalog .catalog-search-clear{position:absolute;z-index:3;right:5px;top:5px;width:36px;height:36px;border:0;border-radius:11px;background:transparent;color:#a9b5af;font-size:25px;line-height:1;display:none;place-items:center;padding:0}
-    #catalog .catalog-search-wrap.has-query .catalog-search-clear{display:grid}
+    #catalog .catalog-search-clear{position:absolute;z-index:4;right:5px;top:5px;width:36px;height:36px;border:0;border-radius:11px;background:transparent;color:#a9b5af;font-size:25px;line-height:1;display:none;place-items:center;padding:0}
     #catalog .catalog-search-clear:active{color:#fff;background:#ffffff0d}
 
-    #mapTop .search{position:relative}
-    #mapTop .search #q{padding-right:46px!important}
-    #mapTop .map-search-clear{position:absolute;z-index:5;right:9px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:10px;background:#111815;color:#c7d0cb;font-size:25px;line-height:1;display:none;place-items:center;padding:0;pointer-events:auto}
-    #mapTop .search.has-query .map-search-clear{display:grid!important}
-    #mapTop .map-search-clear:active{color:#fff;background:#202c27}
+    #mapTop .search #q{padding-right:48px!important}
+    #mapTop .map-search-clear{position:absolute!important;z-index:999!important;right:8px!important;top:50%!important;transform:translateY(-50%)!important;width:36px!important;height:36px!important;border:0!important;border-radius:11px!important;background:transparent!important;color:#d7dfdb!important;font-size:27px!important;font-weight:400!important;line-height:1!important;display:none;place-items:center;padding:0!important;pointer-events:auto!important}
+    #mapTop .map-search-clear:active{background:#ffffff12!important;color:#fff!important}
   `;
   document.head.appendChild(style);
 
@@ -36,6 +39,8 @@
     const mapInput=document.getElementById('q');
     const mapWrap=mapInput?.closest('.search');
     if(!catalog||!head||!mapInput||!mapWrap)return false;
+
+    mapInput.type='text';
 
     let mapClear=mapWrap.querySelector('.map-search-clear');
     if(!mapClear){
@@ -51,22 +56,25 @@
     if(!wrap){
       wrap=document.createElement('div');
       wrap.className='catalog-search-wrap';
-      wrap.innerHTML='<input class="catalog-search" type="search" inputmode="search" autocomplete="off" aria-label="Поиск по каталогу" placeholder="Название, адрес, бассейн, хаммам…"><button class="catalog-search-clear" type="button" aria-label="Очистить поиск">×</button>';
+      wrap.innerHTML='<input class="catalog-search" type="text" inputmode="search" autocomplete="off" aria-label="Поиск по каталогу" placeholder="Название, адрес, бассейн, хаммам…"><button class="catalog-search-clear" type="button" aria-label="Очистить поиск">×</button>';
       head.insertAdjacentElement('afterend',wrap);
     }
 
     const input=wrap.querySelector('.catalog-search');
     const clear=wrap.querySelector('.catalog-search-clear');
     if(!input||!clear)return false;
+    input.type='text';
 
     const updateState=()=>{
-      const has=!!String(mapInput.value||'').length;
-      mapWrap.classList.toggle('has-query',has);
-      wrap.classList.toggle('has-query',has);
+      const value=String(mapInput.value||'');
+      const has=value.length>0;
+      if(input.value!==value)input.value=value;
+      mapClear.style.setProperty('display',has?'grid':'none','important');
+      clear.style.setProperty('display',has?'grid':'none','important');
     };
 
-    if(!wrap.dataset.bound){
-      wrap.dataset.bound='1';
+    if(!wrap.dataset.bound183){
+      wrap.dataset.bound183='1';
       input.value=mapInput.value||'';
 
       input.addEventListener('input',()=>{
@@ -89,7 +97,10 @@
         syncing=false;
         input.focus();
       });
+    }
 
+    if(!mapInput.dataset.searchBound183){
+      mapInput.dataset.searchBound183='1';
       mapInput.addEventListener('input',()=>{
         if(syncing)return;
         syncing=true;
@@ -99,8 +110,8 @@
       });
     }
 
-    if(!mapClear.dataset.bound){
-      mapClear.dataset.bound='1';
+    if(!mapClear.dataset.bound183){
+      mapClear.dataset.bound183='1';
       mapClear.addEventListener('click',e=>{
         e.preventDefault();
         e.stopPropagation();
@@ -132,8 +143,8 @@
       if(!ensureSearch()&&tries<120){setTimeout(wait,50);return}
       guardScreens();
       const catalog=document.getElementById('catalog');
-      if(catalog&&!catalog.dataset.searchGuard){
-        catalog.dataset.searchGuard='1';
+      if(catalog&&!catalog.dataset.searchGuard183){
+        catalog.dataset.searchGuard183='1';
         new MutationObserver(guardScreens).observe(catalog,{attributes:true,attributeFilter:['class']});
       }
     };
