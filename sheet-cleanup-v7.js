@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v12.9
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.0
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -45,6 +45,15 @@
   const mapReturnFix=document.createElement('script');
   mapReturnFix.src='map-return-fix-v13.js?v=13';
   document.head.appendChild(mapReturnFix);
+
+  document.addEventListener('pargid:map-photos-ready',()=>{
+    cleanDemoPhotos();
+    try{if(typeof render==='function')render();}catch(_){ }
+    requestAnimationFrame(remove101SourceLabels);
+  });
+  const mapPhotos=document.createElement('script');
+  mapPhotos.src='map-photos-v15.js?v=15';
+  document.head.appendChild(mapPhotos);
 
   document.addEventListener('pargid:vsaunah-ready',()=>{
     cleanDemoPhotos();
