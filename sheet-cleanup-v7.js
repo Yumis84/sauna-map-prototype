@@ -1,13 +1,37 @@
-// UI cleanup loader + practical sauna/price filters + venue swipe. v9.2
+// UI cleanup loader + practical sauna/price filters + venue swipe + verified-photo cleanup. v10
 (function(){
+  const PLACEHOLDER='venue-placeholder.svg?v=10';
+  const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
+  const isPlaceholder=url=>/venue-placeholder\.svg/i.test(String(url||''));
+
+  function cleanDemoPhotos(){
+    if(!Array.isArray(window.VENUES))return;
+    for(const v of window.VENUES){
+      const gallery=Array.isArray(v.gallery)?v.gallery:[];
+      const real=[...new Set(gallery.filter(src=>src&&!isDemo(src)&&!isPlaceholder(src)))];
+      if(real.length){
+        v.gallery=real;
+        v.img=real[0];
+      }else if(v.img&&!isDemo(v.img)&&!isPlaceholder(v.img)){
+        v.gallery=[v.img];
+      }else{
+        v.img=PLACEHOLDER;
+        v.gallery=[PLACEHOLDER];
+      }
+    }
+  }
+
+  // Убираем старые демонстрационные Unsplash-фото ещё до первого render().
+  cleanDemoPhotos();
+
   const swipe=document.createElement('script');
   swipe.src='venue-swipe-v9.js?v=9.1';
   document.head.appendChild(swipe);
 
   const legacy=document.createElement('script');
   legacy.src='sauna101-legacy-v7.js?v=8';
-  legacy.onload=bootFilters;
-  legacy.onerror=bootFilters;
+  legacy.onload=()=>{cleanDemoPhotos();bootFilters();};
+  legacy.onerror=()=>{cleanDemoPhotos();bootFilters();};
   document.head.appendChild(legacy);
 
   function bootFilters(){
@@ -16,6 +40,8 @@
       tries++;
       try{
         if(typeof render!=='function'||typeof data!=='function'||typeof filters==='undefined'||typeof active==='undefined')throw new Error('main not ready');
+
+        cleanDemoPhotos();
 
         const desired=['Все','Бассейн','Джакузи','Сауна','На дровах','Хаммам','До 1000 ₽','1000–1500 ₽','От 1500 ₽'];
         filters.splice(0,filters.length,...desired);
