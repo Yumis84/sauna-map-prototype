@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.0
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.1
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -35,7 +35,7 @@
   document.head.appendChild(swipe);
 
   const favorites=document.createElement('script');
-  favorites.src='favorites-v12.js?v=12.5';
+  favorites.src='favorites-v12.js?v=12.6';
   document.head.appendChild(favorites);
 
   const keepMapAlive=document.createElement('script');
