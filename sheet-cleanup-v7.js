@@ -1,5 +1,9 @@
-// UI cleanup loader + practical sauna/price filters. v8
+// UI cleanup loader + practical sauna/price filters + venue swipe. v9
 (function(){
+  const swipe=document.createElement('script');
+  swipe.src='venue-swipe-v9.js?v=9';
+  document.head.appendChild(swipe);
+
   const legacy=document.createElement('script');
   legacy.src='sauna101-legacy-v7.js?v=8';
   legacy.onload=bootFilters;
