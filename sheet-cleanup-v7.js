@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v12.1
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v12.2
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -35,7 +35,7 @@
   document.head.appendChild(swipe);
 
   const favorites=document.createElement('script');
-  favorites.src='favorites-v12.js?v=12';
+  favorites.src='favorites-v12.js?v=12.1';
   document.head.appendChild(favorites);
 
   document.addEventListener('pargid:vsaunah-ready',()=>{
