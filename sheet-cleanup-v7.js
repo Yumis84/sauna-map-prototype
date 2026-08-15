@@ -1,4 +1,4 @@
-// Чистая верхняя часть карточки + дополнительные фото из 101sauna.ru. v7.5
+// Чистая верхняя часть карточки + дополнительные фото из 101sauna.ru. v7.6
 (function(){
   const style=document.createElement('style');
   style.textContent=`
@@ -21,10 +21,21 @@
     'Кристалл':['https://101sauna.ru/media/92680/conversions/sauna-84601-2-main-image-card.jpg','https://101sauna.ru/media/92678/conversions/sauna-84601-0-main-image-card.jpg','https://101sauna.ru/media/92679/conversions/sauna-84601-1-main-image-card.jpg'],
     'Родная гавань':['https://101sauna.ru/media/3891/conversions/sauna-90046-0-main-image-card.jpg','https://101sauna.ru/media/3892/conversions/sauna-90046-1-main-image-card.jpg','https://101sauna.ru/media/3893/conversions/sauna-90046-2-main-image-card.jpg'],
     'Ника':['https://101sauna.ru/media/31848/conversions/sauna-90234-0-main-image-card.jpg','https://101sauna.ru/media/31849/conversions/sauna-90234-1-main-image-card.jpg','https://101sauna.ru/media/31850/conversions/sauna-90234-2-main-image-card.jpg'],
+    'Эйфория':['https://101sauna.ru/media/33381/conversions/sauna-95281-0-main-image-card.jpg','https://101sauna.ru/media/33382/conversions/sauna-95281-1-main-image-card.jpg'],
+    'Эфис':['https://101sauna.ru/media/35525/conversions/sauna-106053-0-main-image-card.jpg'],
+    'Женский Рай':['https://101sauna.ru/media/38085/conversions/sauna-118201-0-main-image-card.jpg'],
     'Баня на Шишкина':['https://101sauna.ru/media/81918/conversions/sauna-141454-0-main-image-card.jpg','https://101sauna.ru/media/81919/conversions/sauna-141454-1-main-image-card.jpg','https://101sauna.ru/media/81920/conversions/sauna-141454-2-main-image-card.jpg'],
     'Русские Бани':['https://101sauna.ru/media/43265/conversions/sauna-143011-0-main-image-card.jpg','https://101sauna.ru/media/43267/conversions/sauna-143011-1-main-image-card.jpg','https://101sauna.ru/media/43269/conversions/sauna-143011-2-main-image-card.jpg'],
     'Золотая ночь':['https://101sauna.ru/media/43695/conversions/sauna-145551-0-main-image-card.jpg','https://101sauna.ru/media/43697/conversions/sauna-145551-1-main-image-card.jpg','https://101sauna.ru/media/43699/conversions/sauna-145551-2-main-image-card.jpg'],
     'В Ёлках':['https://101sauna.ru/media/45296/conversions/sauna-154588-0-main-image-card.jpg','https://101sauna.ru/media/45297/conversions/sauna-154588-1-main-image-card.jpg','https://101sauna.ru/media/45298/conversions/sauna-154588-2-main-image-card.jpg'],
+    'Форто-Ранта Рой Джой':['https://101sauna.ru/media/45642/conversions/sauna-157090-0-main-image-card.jpg','https://101sauna.ru/media/45645/conversions/sauna-157090-1-main-image-card.jpg','https://101sauna.ru/media/45647/conversions/sauna-157090-2-main-image-card.jpg'],
+    'У Саныча':['https://101sauna.ru/media/86636/conversions/sauna-73027-0-main-image-card.jpg','https://101sauna.ru/media/86637/conversions/sauna-73027-1-main-image-card.jpg','https://101sauna.ru/media/86638/conversions/sauna-73027-2-main-image-card.jpg'],
+    'Турецкая баня':['https://101sauna.ru/media/17469/conversions/sauna-37268-0-main-image-card.jpg','https://101sauna.ru/media/17472/conversions/sauna-37268-1-main-image-card.jpg','https://101sauna.ru/media/17484/conversions/sauna-37268-2-main-image-card.jpg'],
+    'Тазик':['https://101sauna.ru/media/35629/conversions/sauna-106272-0-main-image-card.jpg','https://101sauna.ru/media/35631/conversions/sauna-106272-1-main-image-card.jpg','https://101sauna.ru/media/35633/conversions/sauna-106272-2-main-image-card.jpg'],
+    'Навигатор':['https://101sauna.ru/media/13706/conversions/sauna-14672-0-main-image-card.jpg','https://101sauna.ru/media/13707/conversions/sauna-14672-1-main-image-card.jpg','https://101sauna.ru/media/13708/conversions/sauna-14672-2-main-image-card.jpg'],
+    'У Каштана':['https://101sauna.ru/media/27185/conversions/sauna-74624-0-main-image-card.jpg','https://101sauna.ru/media/27187/conversions/sauna-74624-1-main-image-card.jpg','https://101sauna.ru/media/27188/conversions/sauna-74624-2-main-image-card.jpg'],
+    'На Третьяковской 27':['https://101sauna.ru/media/80297/conversions/sauna-179660-0-main-image-card.jpg','https://101sauna.ru/media/80299/conversions/sauna-179660-1-main-image-card.jpg','https://101sauna.ru/media/80301/conversions/sauna-179660-2-main-image-card.jpg'],
+    'Villa Spa':['https://101sauna.ru/media/46899/conversions/sauna-164138-0-main-image-card.jpg','https://101sauna.ru/media/46900/conversions/sauna-164138-1-main-image-card.jpg','https://101sauna.ru/media/46901/conversions/sauna-164138-2-main-image-card.jpg'],
     'Баныч':['https://101sauna.ru/media/39777/conversions/sauna-126607-0-main-image-card.jpg','https://101sauna.ru/media/39778/conversions/sauna-126607-1-main-image-card.jpg','https://101sauna.ru/media/39779/conversions/sauna-126607-2-main-image-card.jpg'],
     'Дейма':['https://101sauna.ru/media/13699/conversions/sauna-14596-0-main-image-card.jpg']
   };
