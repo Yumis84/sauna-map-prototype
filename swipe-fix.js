@@ -1,4 +1,4 @@
-// Надёжное закрытие нижней карточки свайпом для Android/iOS.
+// Надёжное закрытие нижней карточки свайпом для Android/iOS. v2
 (function(){
   const style=document.createElement('style');
   style.textContent=`
@@ -53,7 +53,6 @@
       h.setAttribute('aria-label','Смахнуть карточку вниз, чтобы закрыть');
       s.prepend(h);
     }
-    // При открытии новой карточки всегда начинаем сверху.
     if(detail()?.classList.contains('on') && !active && s.dataset.lastCardHtml!==String(s.childElementCount)){
       s.scrollTop=0;
       s.dataset.lastCardHtml=String(s.childElementCount);
