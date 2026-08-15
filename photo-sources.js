@@ -69,3 +69,16 @@ if (Array.isArray(window.VENUES)) {
     }
   }
 }
+
+// Не показываем пользователю технический фильтр по источнику фотографий.
+(function hidePhotoSourceFilter(){
+  const removeChip = () => {
+    document.querySelectorAll('[data-f="📷 Официальные фото"]').forEach(el => el.remove());
+  };
+  const start = () => {
+    removeChip();
+    new MutationObserver(removeChip).observe(document.body, {childList:true, subtree:true});
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
+  else start();
+})();
