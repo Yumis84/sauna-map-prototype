@@ -1,4 +1,4 @@
-// UI cleanup loader + practical sauna/price filters + venue swipe. v9.1
+// UI cleanup loader + practical sauna/price filters + venue swipe. v9.2
 (function(){
   const swipe=document.createElement('script');
   swipe.src='venue-swipe-v9.js?v=9.1';
@@ -17,7 +17,7 @@
       try{
         if(typeof render!=='function'||typeof data!=='function'||typeof filters==='undefined'||typeof active==='undefined')throw new Error('main not ready');
 
-        const desired=['Все','Бассейн','Сауна','На дровах','Хаммам','До 1000 ₽','1000–1500 ₽','От 1500 ₽'];
+        const desired=['Все','Бассейн','Джакузи','Сауна','На дровах','Хаммам','До 1000 ₽','1000–1500 ₽','От 1500 ₽'];
         filters.splice(0,filters.length,...desired);
 
         const baseSearch=()=>{
@@ -31,6 +31,7 @@
           const list=baseSearch();
           if(active==='Все')return list;
           if(active==='Бассейн')return list.filter(v=>has(v,'Бассейн'));
+          if(active==='Джакузи')return list.filter(v=>has(v,'Джакузи'));
           if(active==='Сауна')return list.filter(isSauna);
           if(active==='На дровах')return list.filter(v=>has(v,'На дровах'));
           if(active==='Хаммам')return list.filter(v=>has(v,'Хаммам'));
