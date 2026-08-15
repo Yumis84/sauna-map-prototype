@@ -1,7 +1,7 @@
-// Поиск в каталоге и на карте: один крестик, синхронизация и чистая карта. v18.3
+// Поиск в каталоге и на карте: один крестик, синхронизация и чистая карта. v18.4
 (function(){
-  if(window.__pargidCatalogSearchV183)return;
-  window.__pargidCatalogSearchV183=true;
+  if(window.__pargidCatalogSearchV184)return;
+  window.__pargidCatalogSearchV184=true;
 
   const style=document.createElement('style');
   style.textContent=`
@@ -33,7 +33,15 @@
 
   let syncing=false;
 
+  function stripMapBrand(){
+    const top=document.getElementById('mapTop');
+    if(!top)return false;
+    top.querySelectorAll('.bar').forEach(el=>el.remove());
+    return true;
+  }
+
   function ensureSearch(){
+    stripMapBrand();
     const catalog=document.getElementById('catalog');
     const head=catalog?.querySelector('.head');
     const mapInput=document.getElementById('q');
@@ -73,8 +81,8 @@
       clear.style.setProperty('display',has?'grid':'none','important');
     };
 
-    if(!wrap.dataset.bound183){
-      wrap.dataset.bound183='1';
+    if(!wrap.dataset.bound184){
+      wrap.dataset.bound184='1';
       input.value=mapInput.value||'';
 
       input.addEventListener('input',()=>{
@@ -99,8 +107,8 @@
       });
     }
 
-    if(!mapInput.dataset.searchBound183){
-      mapInput.dataset.searchBound183='1';
+    if(!mapInput.dataset.searchBound184){
+      mapInput.dataset.searchBound184='1';
       mapInput.addEventListener('input',()=>{
         if(syncing)return;
         syncing=true;
@@ -110,8 +118,8 @@
       });
     }
 
-    if(!mapClear.dataset.bound183){
-      mapClear.dataset.bound183='1';
+    if(!mapClear.dataset.bound184){
+      mapClear.dataset.bound184='1';
       mapClear.addEventListener('click',e=>{
         e.preventDefault();
         e.stopPropagation();
@@ -130,6 +138,7 @@
   }
 
   function guardScreens(){
+    stripMapBrand();
     const catalog=document.getElementById('catalog');
     const top=document.getElementById('mapTop');
     if(!catalog||!top)return;
@@ -140,12 +149,18 @@
     let tries=0;
     const wait=()=>{
       tries++;
+      stripMapBrand();
       if(!ensureSearch()&&tries<120){setTimeout(wait,50);return}
       guardScreens();
       const catalog=document.getElementById('catalog');
-      if(catalog&&!catalog.dataset.searchGuard183){
-        catalog.dataset.searchGuard183='1';
+      if(catalog&&!catalog.dataset.searchGuard184){
+        catalog.dataset.searchGuard184='1';
         new MutationObserver(guardScreens).observe(catalog,{attributes:true,attributeFilter:['class']});
+      }
+      const top=document.getElementById('mapTop');
+      if(top&&!top.dataset.brandGuard184){
+        top.dataset.brandGuard184='1';
+        new MutationObserver(stripMapBrand).observe(top,{childList:true,subtree:false});
       }
     };
     wait();
