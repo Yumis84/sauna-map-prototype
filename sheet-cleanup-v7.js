@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.1
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.2
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -28,6 +28,12 @@
     });
   }
 
+  function cleanCallLabel(){
+    document.querySelectorAll('#sheet .call-v4').forEach(btn=>{
+      if(!btn.disabled&&/Позвонить в баню/i.test(btn.textContent||''))btn.textContent='☎ Позвонить';
+    });
+  }
+
   cleanDemoPhotos();
 
   const swipe=document.createElement('script');
@@ -49,7 +55,7 @@
   document.addEventListener('pargid:map-photos-ready',()=>{
     cleanDemoPhotos();
     try{if(typeof render==='function')render();}catch(_){ }
-    requestAnimationFrame(remove101SourceLabels);
+    requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();});
   });
   const mapPhotos=document.createElement('script');
   mapPhotos.src='map-photos-v15.js?v=15';
@@ -58,7 +64,7 @@
   document.addEventListener('pargid:vsaunah-ready',()=>{
     cleanDemoPhotos();
     try{if(typeof render==='function')render();}catch(_){ }
-    requestAnimationFrame(remove101SourceLabels);
+    requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();});
   });
   const vsaunah=document.createElement('script');
   vsaunah.src='vsaunah-v11.js?v=11.1';
@@ -100,7 +106,7 @@
         };
         if(!desired.includes(active))active='Все';
         render();
-        requestAnimationFrame(remove101SourceLabels);
+        requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();});
       }catch(e){if(tries<80)setTimeout(wait,40);}
     };
     wait();
@@ -108,8 +114,9 @@
 
   function startSourceCleanup(){
     remove101SourceLabels();
+    cleanCallLabel();
     const sheet=document.getElementById('sheet');
-    if(sheet)new MutationObserver(()=>requestAnimationFrame(remove101SourceLabels)).observe(sheet,{childList:true,subtree:true});
+    if(sheet)new MutationObserver(()=>requestAnimationFrame(()=>{remove101SourceLabels();cleanCallLabel();})).observe(sheet,{childList:true,subtree:true});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startSourceCleanup,{once:true});else startSourceCleanup();
 })();
