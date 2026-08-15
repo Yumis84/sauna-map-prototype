@@ -51,6 +51,10 @@ window.BANYA_PHOTOS = {
   "Русские Бани": {
     img:"https://storage.yandexcloud.net/data.banya.ru/uploads/feced672-1a35-4afd-96ea-6f32a3acc305/018e09fb-6a7a-9fab-3fbf-ed45dc72a22f/LG.webp",
     url:"https://banya.ru/kaliningradskaya-obl_kaliningrad/bathhouses/russkie-bani-na-turukhanskoy_7698-8234/"
+  },
+  "Карусель": {
+    img:"https://storage.yandexcloud.net/data.banya.ru/uploads/4d81dd38-e404-4bf6-96f5-0584faa89a7f/018e0998-603f-1ede-19f3-5821179ba948/LG.webp",
+    url:"https://banya.ru/kaliningradskaya-obl_kaliningrad/bathhouses/sauna-karusel_9470-9439/"
   }
 };
 
