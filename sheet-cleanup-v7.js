@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v12.4
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v12.5
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -44,7 +44,7 @@
     requestAnimationFrame(remove101SourceLabels);
   });
   const vsaunah=document.createElement('script');
-  vsaunah.src='vsaunah-v11.js?v=11';
+  vsaunah.src='vsaunah-v11.js?v=11.1';
   document.head.appendChild(vsaunah);
 
   const legacy=document.createElement('script');
