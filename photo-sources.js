@@ -82,3 +82,46 @@ if (Array.isArray(window.VENUES)) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
   else start();
 })();
+
+// Синхронизируем видимые карточки/поиск с метками Leaflet на карте.
+(function syncMapWithFilters(){
+  function syncMapMarkers(){
+    try {
+      if (typeof data !== 'function' || typeof markers === 'undefined' || typeof map === 'undefined' || !map || typeof map.hasLayer !== 'function') return;
+      const visibleIds = new Set(data().map(v => String(v.id)));
+      for (const [id, marker] of Object.entries(markers)) {
+        const shouldShow = visibleIds.has(String(id));
+        const isShown = map.hasLayer(marker);
+        if (shouldShow && !isShown) marker.addTo(map);
+        if (!shouldShow && isShown) map.removeLayer(marker);
+      }
+    } catch (e) {
+      console.debug('ПарГид: синхронизация меток пропущена', e);
+    }
+  }
+
+  function start(){
+    // После выбора фильтра render() уже обновит карточки; затем обновляем карту.
+    document.addEventListener('click', e => {
+      if (e.target.closest('[data-f]')) setTimeout(syncMapMarkers, 0);
+    });
+    // Поиск тоже должен менять набор меток.
+    document.addEventListener('input', e => {
+      if (e.target && e.target.id === 'q') setTimeout(syncMapMarkers, 0);
+    });
+
+    // Метки геокодируются постепенно; новые точки сразу подчиняются активному фильтру.
+    if (typeof addMarker === 'function') {
+      const originalAddMarker = addMarker;
+      addMarker = function(v){
+        originalAddMarker(v);
+        syncMapMarkers();
+      };
+    }
+
+    setTimeout(syncMapMarkers, 0);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
+  else start();
+})();
