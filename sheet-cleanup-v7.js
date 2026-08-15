@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.11
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.12
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -18,7 +18,12 @@
     'Эфис':'+74012557678',
     'Стиль':'+74012916331',
     'Тазик':'+74012386620',
-    'У Каштана':'+74012377279'
+    'У Каштана':'+74012377279',
+    'Русские Бани':'+79114601900',
+    'Посейдон':'+74012388783',
+    'Отдых':'+74012509556',
+    'Villa Spa':'+74012955313',
+    'Форто-Ранта Рой Джой':'+74012376040'
   };
 
   function applyPhoneUpdates(){
