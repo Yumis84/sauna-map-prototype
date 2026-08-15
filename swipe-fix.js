@@ -1,4 +1,4 @@
-// Надёжное закрытие нижней карточки свайпом для Android/iOS. v5
+// Надёжное закрытие нижней карточки свайпом для Android/iOS. v5.1
 (function(){
   const style=document.createElement('style');
   style.textContent=`
