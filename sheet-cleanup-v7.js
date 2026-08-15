@@ -1,4 +1,4 @@
-// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.12
+// UI cleanup loader + filters + venue swipe + favorites + verified photo sources. v13.13
 (function(){
   const PLACEHOLDER='venue-placeholder.svg?v=10';
   const isDemo=url=>/images\.unsplash\.com/i.test(String(url||''));
@@ -65,6 +65,7 @@
   const favorites=document.createElement('script');favorites.src='favorites-v12.js?v=12.6';document.head.appendChild(favorites);
   const ratingUi=document.createElement('script');ratingUi.src='rating-ui-v17.js?v=17';document.head.appendChild(ratingUi);
   const catalogSearch=document.createElement('script');catalogSearch.src='catalog-search-v18.js?v=18.5';document.head.appendChild(catalogSearch);
+  const detailActions=document.createElement('script');detailActions.src='detail-actions-top-v19.js?v=19';document.head.appendChild(detailActions);
   const keepMapAlive=document.createElement('script');keepMapAlive.src='favorites-map-keepalive-v14.js?v=14';document.head.appendChild(keepMapAlive);
   const mapReturnFix=document.createElement('script');mapReturnFix.src='map-return-fix-v13.js?v=13';document.head.appendChild(mapReturnFix);
   const userLocation=document.createElement('script');userLocation.src='user-location-v16.js?v=16';document.head.appendChild(userLocation);
