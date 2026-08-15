@@ -1,4 +1,4 @@
-// Чистая верхняя часть карточки + дополнительные фото из 101sauna.ru. v7.6
+// Чистая верхняя часть карточки + дополнительные фото из 101sauna.ru. v7.7
 (function(){
   const style=document.createElement('style');
   style.textContent=`
