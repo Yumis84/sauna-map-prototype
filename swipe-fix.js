@@ -2,6 +2,16 @@
 (function(){
   const style=document.createElement('style');
   style.textContent=`
+    .nav button{
+      margin:5px;border-radius:15px;
+      background:transparent!important;color:#8e9a94!important;
+      font-weight:700;transition:background .16s ease,color .16s ease,transform .16s ease;
+    }
+    .nav button.on{
+      background:#f2a93b!important;color:#241707!important;
+      font-weight:900;box-shadow:0 4px 14px #0005;
+    }
+    .nav button:active{transform:scale(.98)}
     .sheet{will-change:transform;overscroll-behavior-y:contain}
     .sheet.dragging-v2{transition:none!important}
     .sheet.snap-v2{transition:transform .22s cubic-bezier(.2,.8,.2,1)!important}
@@ -22,6 +32,13 @@
   const detail=()=>document.getElementById('detail');
   const sheet=()=>document.getElementById('sheet');
   let active=false,startY=0,lastY=0,startAt=0,pointerId=null;
+
+  function syncNavActive(section){
+    document.querySelectorAll('.nav button[data-s]').forEach(b=>{
+      b.classList.toggle('on',b.dataset.s===section);
+      b.setAttribute('aria-current',b.dataset.s===section?'page':'false');
+    });
+  }
 
   function finishClose(){
     const d=detail(),s=sheet();
@@ -90,6 +107,11 @@
 
   function init(){
     const d=detail(),s=sheet();if(!d||!s)return;
+    syncNavActive('map');
+    document.addEventListener('click',e=>{
+      const b=e.target.closest('.nav button[data-s]');
+      if(b)requestAnimationFrame(()=>syncNavActive(b.dataset.s));
+    });
     ensureHandle();
     s.addEventListener('pointerdown',onPointerDown);
     s.addEventListener('pointermove',onPointerMove);
