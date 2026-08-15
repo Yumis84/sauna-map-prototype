@@ -1,4 +1,4 @@
-// Избранное: отдельная вкладка, хранение в localStorage и синхронизация сердечек. v12.4
+// Избранное: отдельная вкладка, SVG-сердечки и синхронизация состояния. v12.5
 (function(){
   if(window.__pargidFavoritesV12)return;
   window.__pargidFavoritesV12=true;
@@ -8,18 +8,24 @@
   style.textContent=`
     .nav{grid-template-columns:repeat(3,1fr)!important}
     .nav [data-s="favorites"]{line-height:1;font-weight:800!important}
-    .nav [data-s="favorites"] .nav-heart{width:27px;height:27px;display:block;overflow:visible}
-    .nav [data-s="favorites"] .nav-heart path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:fill .16s ease,stroke .16s ease}
-    .nav [data-s="favorites"] .nav-heart.filled path{fill:currentColor}
+    .heart-svg{display:block;overflow:visible;pointer-events:none}
+    .heart-svg path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:fill .16s ease,stroke .16s ease,transform .16s ease;transform-origin:center}
+    .heart-svg.filled path{fill:currentColor}
+    .nav [data-s="favorites"] .heart-svg{width:27px;height:27px}
+    #sheet .fav{display:grid!important;place-items:center;color:#ffd37f!important}
+    #sheet .fav .heart-svg{width:25px;height:25px}
+    #list .item{position:relative}
+    #list .catalog-fav,#favorites .fav-remove{position:absolute;z-index:4;right:10px;top:10px;width:38px;height:38px;border:0;border-radius:50%;background:#09100dcc;color:#ffd37f;display:grid;place-items:center;box-shadow:0 3px 12px #0005}
+    #list .catalog-fav .heart-svg,#favorites .fav-remove .heart-svg{width:22px;height:22px}
+    #list .item .ct,#favorites .favorite-item .ct{padding-right:44px}
     #favorites .favorite-empty{padding:64px 18px;text-align:center;color:#a9b5af;line-height:1.55}
-    #favorites .favorite-empty .heart{font-size:38px;color:#ffd37f;margin-bottom:10px}
+    #favorites .favorite-empty .heart{display:flex;justify-content:center;color:#ffd37f;margin-bottom:10px}
+    #favorites .favorite-empty .heart .heart-svg{width:40px;height:40px}
     #favorites .favorite-item{position:relative}
-    #favorites .fav-remove{position:absolute;z-index:3;right:10px;top:10px;width:36px;height:36px;border:0;border-radius:12px;background:#09100dcc;color:#ffd37f;font-size:20px;display:grid;place-items:center}
-    #favorites .favorite-item .ct{padding-right:42px}
   `;
   document.head.appendChild(style);
 
-  const navHeart=filled=>`<svg class="nav-heart${filled?' filled':''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.2C10.1 18.5 4.2 14.2 4.2 9.5C4.2 7.1 6.1 5.3 8.5 5.3C10 5.3 11.3 6.1 12 7.3C12.7 6.1 14 5.3 15.5 5.3C17.9 5.3 19.8 7.1 19.8 9.5C19.8 14.2 13.9 18.5 12 20.2Z"/></svg>`;
+  const heartSvg=filled=>`<svg class="heart-svg${filled?' filled':''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.2C10.1 18.5 4.2 14.2 4.2 9.5C4.2 7.1 6.1 5.3 8.5 5.3C10 5.3 11.3 6.1 12 7.3C12.7 6.1 14 5.3 15.5 5.3C17.9 5.3 19.8 7.1 19.8 9.5C19.8 14.2 13.9 18.5 12 20.2Z"/></svg>`;
 
   const favIds=()=>{
     try{return new Set((JSON.parse(localStorage.getItem(KEY)||'[]')||[]).map(Number))}
@@ -50,7 +56,7 @@
         <div class="price">${priceLocal(v)}</div>
         <div class="tags">${(v.features||[]).slice(0,3).map(x=>`<span class="tag">${x}</span>`).join('')}</div>
       </div>
-      <button class="fav-remove" type="button" data-remove-fav="${v.id}" aria-label="Удалить ${v.name} из избранного">♥</button>
+      <button class="fav-remove" type="button" data-remove-fav="${v.id}" aria-label="Удалить ${v.name} из избранного">${heartSvg(true)}</button>
     </article>`;
   }
 
@@ -74,7 +80,7 @@
       button=document.createElement('button');
       button.type='button';
       button.dataset.s='favorites';
-      button.innerHTML=navHeart(false);
+      button.innerHTML=heartSvg(false);
       button.setAttribute('aria-label','Избранное');
       nav.appendChild(button);
       button.onclick=()=>showFavorites();
@@ -86,9 +92,34 @@
     const count=favIds().size;
     const b=document.querySelector('.nav [data-s="favorites"]');
     if(b){
-      b.innerHTML=navHeart(count>0);
+      b.innerHTML=heartSvg(count>0);
       b.setAttribute('aria-label',count?`Избранное, ${count}`:'Избранное');
     }
+  }
+
+  function decorateCatalog(){
+    const ids=favIds();
+    document.querySelectorAll('#list .item[data-id]').forEach(item=>{
+      const id=Number(item.dataset.id);
+      if(!Number.isFinite(id))return;
+      const venue=(window.VENUES||[]).find(v=>Number(v.id)===id);
+      let btn=item.querySelector('.catalog-fav');
+      if(!btn){
+        btn=document.createElement('button');
+        btn.type='button';
+        btn.className='catalog-fav';
+        btn.dataset.catalogFav=String(id);
+        item.appendChild(btn);
+        btn.addEventListener('click',e=>{
+          e.preventDefault();
+          e.stopPropagation();
+          toggleFavorite(id,true);
+        });
+      }
+      const filled=ids.has(id);
+      btn.innerHTML=heartSvg(filled);
+      btn.setAttribute('aria-label',filled?`Удалить ${venue?.name||'заведение'} из избранного`:`Добавить ${venue?.name||'заведение'} в избранное`);
+    });
   }
 
   function renderFavorites(){
@@ -98,7 +129,7 @@
     const el=document.getElementById('favList'),badge=document.getElementById('favCount');
     if(badge)badge.textContent=String(list.length);
     if(!el)return;
-    el.innerHTML=list.length?list.map(favoriteItem).join(''):`<div class="favorite-empty"><div class="heart">♡</div><b>Пока пусто</b><br>Нажмите на сердечко в карточке бани или сауны — она появится здесь.</div>`;
+    el.innerHTML=list.length?list.map(favoriteItem).join(''):`<div class="favorite-empty"><div class="heart">${heartSvg(false)}</div><b>Пока пусто</b><br>Нажмите на сердечко в карточке бани или сауны — она появится здесь.</div>`;
 
     el.querySelectorAll('[data-favorite-id]').forEach(item=>{
       item.addEventListener('click',e=>{
@@ -109,13 +140,42 @@
     });
     el.querySelectorAll('[data-remove-fav]').forEach(btn=>{
       btn.addEventListener('click',e=>{
+        e.preventDefault();
         e.stopPropagation();
-        const id=Number(btn.dataset.removeFav),set=favIds();
-        set.delete(id);writeFavs(set);
-        renderFavorites();updateNavCount();
+        toggleFavorite(Number(btn.dataset.removeFav),true);
       });
     });
     updateNavCount();
+  }
+
+  function syncOpenHeart(){
+    const title=document.querySelector('#sheet .detail h2')?.textContent?.trim();
+    if(!title)return;
+    const v=(window.VENUES||[]).find(x=>x.name===title),heart=document.querySelector('#sheet .fav');
+    if(v&&heart){
+      const filled=favIds().has(Number(v.id));
+      heart.innerHTML=heartSvg(filled);
+      heart.setAttribute('aria-label',filled?'Удалить из избранного':'Добавить в избранное');
+    }
+  }
+
+  function refreshFavoriteUi(){
+    renderFavorites();
+    decorateCatalog();
+    updateNavCount();
+    syncOpenHeart();
+  }
+
+  function toggleFavorite(id,showMessage=false){
+    if(!Number.isFinite(id))return;
+    const set=favIds();
+    const add=!set.has(id);
+    if(add)set.add(id);else set.delete(id);
+    writeFavs(set);
+    refreshFavoriteUi();
+    if(showMessage){
+      try{if(typeof toast==='function')toast(add?'Добавлено в избранное':'Удалено из избранного')}catch(_){ }
+    }
   }
 
   function showFavorites(){
@@ -148,13 +208,6 @@
     }catch(_){return false}
   }
 
-  function syncOpenHeart(){
-    const title=document.querySelector('#sheet .detail h2')?.textContent?.trim();
-    if(!title)return;
-    const v=(window.VENUES||[]).find(x=>x.name===title),heart=document.querySelector('#sheet .fav');
-    if(v&&heart)heart.textContent=favIds().has(Number(v.id))?'♥':'♡';
-  }
-
   function boot(){
     let tries=0;
     const wait=()=>{
@@ -164,15 +217,19 @@
         return;
       }
       patchScreen();
-      renderFavorites();
-      updateNavCount();
+      refreshFavoriteUi();
 
       document.addEventListener('click',e=>{
-        if(e.target.closest('#sheet .fav'))setTimeout(()=>{renderFavorites();updateNavCount();syncOpenHeart()},0);
+        if(e.target.closest('#sheet .fav'))setTimeout(refreshFavoriteUi,0);
       });
+
       const sheet=document.getElementById('sheet');
       if(sheet)new MutationObserver(()=>requestAnimationFrame(syncOpenHeart)).observe(sheet,{childList:true,subtree:true});
-      window.addEventListener('storage',e=>{if(e.key===KEY){renderFavorites();updateNavCount();syncOpenHeart()}});
+
+      const list=document.getElementById('list');
+      if(list)new MutationObserver(()=>requestAnimationFrame(decorateCatalog)).observe(list,{childList:true,subtree:true});
+
+      window.addEventListener('storage',e=>{if(e.key===KEY)refreshFavoriteUi()});
     };
     wait();
   }
