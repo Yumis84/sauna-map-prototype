@@ -1,4 +1,4 @@
-// Дополнительные проверяемые фото-источники. Не применяем URL, если изображение не загрузилось. v15
+// Дополнительные проверяемые фото-источники. Не применяем URL, если изображение не загрузилось. v15.1
 (function(){
   if(window.__pargidMapPhotosV15)return;
   window.__pargidMapPhotosV15=true;
@@ -59,6 +59,62 @@
         "https://spahouse39.ru/wp-content/uploads/2022/01/s3250-min.png",
         "https://spahouse39.ru/wp-content/uploads/2022/01/s2250-min.png",
         "https://spahouse39.ru/wp-content/uploads/2022/01/s1250-min.png"
+      ]
+    },
+    "Августо":{
+      preferIncoming:true,
+      url:"https://101sauna.ru/Kaliningrad/4",
+      images:[
+        "https://101sauna.ru/media/61325/conversions/sauna-14488-0-main-image-big.jpg",
+        "https://101sauna.ru/media/61326/conversions/sauna-14488-1-main-image-big.jpg",
+        "https://101sauna.ru/media/61327/conversions/sauna-14488-2-main-image-big.jpg"
+      ]
+    },
+    "Околица":{
+      preferIncoming:true,
+      url:"https://banya.ru/kaliningradskaya-obl_kaliningrad/bathhouses/banya-okolitsa_3325-9957/",
+      images:[
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/7efcf422-72c1-4be4-9d7e-11bb7cd8e98f/018deb5a-8a98-2806-8572-79f15f0a0d54/LG.webp",
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/7efcf422-72c1-4be4-9d7e-11bb7cd8e98f/018deb5a-90cd-c1c7-662a-b505c6f412a0/LG.webp",
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/7efcf422-72c1-4be4-9d7e-11bb7cd8e98f/018deb5a-9792-6ee9-81bf-1f5c9bf91c7a/LG.webp"
+      ]
+    },
+    "Берлога":{
+      preferIncoming:true,
+      url:"https://banya.ru/kaliningradskaya-obl_kaliningrad/bathhouses/banya-na-drovakh-berloga_6663-6177/",
+      images:[
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/1077cd98-eaad-4dac-8589-24f151c1191b/018de72a-547e-8088-58f8-9bfbecd2ce6c/LG.webp",
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/1077cd98-eaad-4dac-8589-24f151c1191b/018de72a-5a66-0f8b-5b86-ae2081e964fa/LG.webp",
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/1077cd98-eaad-4dac-8589-24f151c1191b/018de72a-6043-c8ee-f533-989e48dc1f2e/LG.webp"
+      ]
+    },
+    "Апельсин":{
+      preferIncoming:true,
+      url:"https://banya.ru/kaliningradskaya-obl_kaliningrad/bathhouses/banya-kafe-apelsin_8677-0795/",
+      images:[
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/a951eca6-0c31-4831-bd55-6af5263a66a7/018decf0-4f6a-29b1-a85e-953ab56dd3fb/LG.webp",
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/a951eca6-0c31-4831-bd55-6af5263a66a7/018decf0-5557-3ff8-86ef-7a789ff653db/LG.webp",
+        "https://storage.yandexcloud.net/data.banya.ru/uploads/a951eca6-0c31-4831-bd55-6af5263a66a7/018decf0-5ca2-8836-584a-97e6cd3d9fb6/LG.webp"
+      ]
+    },
+    "Милана":{
+      preferIncoming:true,
+      url:"https://101sauna.ru/Kaliningrad/45",
+      images:[
+        "https://101sauna.ru/media/61394/conversions/sauna-14652-0-main-image-big.jpg",
+        "https://101sauna.ru/media/61396/conversions/sauna-14652-1-main-image-big.jpg",
+        "https://101sauna.ru/media/61398/conversions/sauna-14652-2-main-image-big.jpg",
+        "https://101sauna.ru/media/61400/conversions/sauna-14652-3-image-big.jpg",
+        "https://101sauna.ru/media/61401/conversions/sauna-14652-4-image-big.jpg"
+      ]
+    },
+    "Стиль":{
+      preferIncoming:true,
+      url:"https://101sauna.ru/Kaliningrad/saunyi-Stil",
+      images:[
+        "https://101sauna.ru/media/77010/conversions/sauna-112925-0-main-image-big.jpg",
+        "https://101sauna.ru/media/77012/conversions/sauna-112925-1-main-image-big.jpg",
+        "https://101sauna.ru/media/77013/conversions/sauna-112925-2-main-image-big.jpg"
       ]
     }
   };
